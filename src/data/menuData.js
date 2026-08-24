@@ -1,5 +1,3 @@
-// Default menu dataset for Restaurant360 POS
-// Represents the initial catalog of dishes available for order placement, categorized by course type and diet
 
 const menuData = [
   {
@@ -7,7 +5,7 @@ const menuData = [
     name: "Paneer Tikka",
     category: "Starters",
     type: "Veg",
-    price: 280, // Base price in INR
+    price: 280,
   },
   {
     id: 2,

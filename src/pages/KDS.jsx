@@ -9,20 +9,15 @@ import {
   FaHandPaper,
   FaCheck
 } from "react-icons/fa";
+import { getKdsTickets, advanceKdsTicket } from "../services/api";
 import "../styles/kds.css";
 
-/**
- * Slidable Order Card Component
- * Allows the WHOLE order card box to be dragged/slid across the UI by the chef,
- * with dedicated click & slide support for effortless completion.
- */
+
 function SlidableKotCard({ ticket, onAdvance, toggleItemCheck, getTimerUrgency, getElapsedString }) {
   const cardRef = useRef(null);
   const [dragOffset, setDragOffset] = useState({ x: 0, y: 0 });
   const [isSliding, setIsSliding] = useState(false);
   const startPosRef = useRef({ x: 0, y: 0 });
-
-  // Touch / Mouse sliding handlers for the whole card box
   const handleTouchStart = (clientX, clientY) => {
     setIsSliding(true);
     startPosRef.current = { x: clientX - dragOffset.x, y: clientY - dragOffset.y };
@@ -32,7 +27,6 @@ function SlidableKotCard({ ticket, onAdvance, toggleItemCheck, getTimerUrgency, 
     if (!isSliding) return;
     const deltaX = clientX - startPosRef.current.x;
     const deltaY = clientY - startPosRef.current.y;
-    // Allow horizontal sliding
     if (deltaX >= 0) {
       setDragOffset({ x: deltaX, y: deltaY * 0.2 });
     }
@@ -41,7 +35,6 @@ function SlidableKotCard({ ticket, onAdvance, toggleItemCheck, getTimerUrgency, 
   const handleTouchEnd = () => {
     if (!isSliding) return;
     setIsSliding(false);
-    // Responsive slide threshold: 60px makes sliding super easy even on 3rd column
     if (dragOffset.x > 60) {
       setDragOffset({ x: 200, y: 0 });
       setTimeout(() => {
@@ -52,8 +45,6 @@ function SlidableKotCard({ ticket, onAdvance, toggleItemCheck, getTimerUrgency, 
       setDragOffset({ x: 0, y: 0 });
     }
   };
-
-  // HTML5 Drag & Drop handlers
   const handleNativeDragStart = (e) => {
     e.dataTransfer.setData("text/plain", ticket.id.toString());
     e.dataTransfer.effectAllowed = "move";
@@ -96,7 +87,7 @@ function SlidableKotCard({ ticket, onAdvance, toggleItemCheck, getTimerUrgency, 
       onMouseUp={handleTouchEnd}
       onMouseLeave={handleTouchEnd}
     >
-      {/* Ticket Header */}
+
       <div className="kot-card-header">
         <div className="kot-id-badge">
           <span>{ticket.ticketNo}</span>
@@ -109,7 +100,7 @@ function SlidableKotCard({ ticket, onAdvance, toggleItemCheck, getTimerUrgency, 
         </div>
       </div>
 
-      {/* Items List */}
+
       <div className="kot-items-list">
         {ticket.items.map((item) => (
           <div
@@ -136,7 +127,7 @@ function SlidableKotCard({ ticket, onAdvance, toggleItemCheck, getTimerUrgency, 
         ))}
       </div>
 
-      {/* Special Instructions Notes */}
+
       {ticket.notes && (
         <div className="special-notes-box">
           <FaExclamationTriangle />
@@ -144,11 +135,10 @@ function SlidableKotCard({ ticket, onAdvance, toggleItemCheck, getTimerUrgency, 
         </div>
       )}
 
-      {/* WHOLE CARD SLIDE & ACTION FOOTER */}
+
       <div
         className="card-slide-footer"
         onClick={(e) => {
-          // Direct tap/click on footer also advances status for maximum accessibility!
           e.stopPropagation();
           onAdvance(ticket.id, ticket.stage);
         }}
@@ -175,65 +165,30 @@ function SlidableKotCard({ ticket, onAdvance, toggleItemCheck, getTimerUrgency, 
   );
 }
 
-/**
- * Main Kitchen Orders Display (KDS) Page
- */
+
 function KDS() {
   const [filterType, setFilterType] = useState("All");
   const [dragOverColumn, setDragOverColumn] = useState(null);
 
-  // Mock initial KOT dataset matching screenshot
-  const [tickets, setTickets] = useState([
-    {
-      id: 101,
-      ticketNo: "#KOT-101",
-      orderType: "Dine-in",
-      location: "Table T9",
-      stage: "new", // 'new' | 'preparing' | 'ready'
-      startTime: Date.now() - 3 * 60 * 1000,
-      items: [
-        { id: 1, name: "Paneer Tikka", qty: 2, checked: false },
-        { id: 2, name: "Butter Naan", qty: 2, checked: false },
-        { id: 3, name: "Gulab Jamun", qty: 1, checked: false }
-      ],
-      notes: "Extra Spicy, Serve starters first"
-    },
-    {
-      id: 102,
-      ticketNo: "#KOT-102",
-      orderType: "Takeaway",
-      location: "Pickup",
-      stage: "preparing",
-      startTime: Date.now() - 8 * 60 * 1000,
-      items: [
-        { id: 4, name: "Chicken 65", qty: 1, checked: true },
-        { id: 5, name: "Garlic Naan", qty: 3, checked: false }
-      ],
-      notes: "No onions in salad"
-    },
-    {
-      id: 103,
-      ticketNo: "#KOT-103",
-      orderType: "Delivery",
-      location: "Swiggy #94",
-      stage: "ready",
-      startTime: Date.now() - 14 * 60 * 1000,
-      items: [
-        { id: 6, name: "Veg Spring Roll", qty: 1, checked: true },
-        { id: 7, name: "Mango Lassi", qty: 2, checked: true }
-      ],
-      notes: "Pack cutlery"
-    }
-  ]);
+  const [tickets, setTickets] = useState([]);
 
-  // Live timer tick
+  useEffect(() => {
+    const loadTickets = async () => {
+      try {
+        const data = await getKdsTickets();
+        setTickets(data || []);
+      } catch (error) {
+        console.error('Failed to load KDS tickets:', error);
+      }
+    };
+
+    loadTickets();
+  }, []);
   const [, setNow] = useState(Date.now());
   useEffect(() => {
     const timer = setInterval(() => setNow(Date.now()), 1000);
     return () => clearInterval(timer);
   }, []);
-
-  // Filtered tickets
   const filteredTickets = tickets.filter((t) => {
     if (filterType === "All") return true;
     return t.orderType.toLowerCase() === filterType.toLowerCase();
@@ -242,10 +197,13 @@ function KDS() {
   const newTickets = filteredTickets.filter((t) => t.stage === "new");
   const preparingTickets = filteredTickets.filter((t) => t.stage === "preparing");
   const readyTickets = filteredTickets.filter((t) => t.stage === "ready");
+  const advanceStage = async (id, currentStage) => {
+    try {
+      await advanceKdsTicket(id);
+    } catch (error) {
+      console.error('Failed to advance KDS ticket:', error);
+    }
 
-  // Advance ticket stage reliably
-  const advanceStage = (id, currentStage) => {
-    // Play completion chime
     try {
       const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
       const osc = audioCtx.createOscillator();
@@ -254,9 +212,7 @@ function KDS() {
       osc.connect(audioCtx.destination);
       osc.start();
       osc.stop(audioCtx.currentTime + 0.12);
-    } catch {
-      // Audio fallback
-    }
+    } catch {}
 
     setTickets((prev) =>
       prev
@@ -264,22 +220,18 @@ function KDS() {
           if (t.id === id) {
             if (currentStage === "new") return { ...t, stage: "preparing" };
             if (currentStage === "preparing") return { ...t, stage: "ready" };
-            if (currentStage === "ready") return null; // Complete / Archive
+            if (currentStage === "ready") return null;
           }
           return t;
         })
         .filter(Boolean)
     );
   };
-
-  // Move ticket to specific stage (HTML5 drag & drop drop handler)
   const moveTicketToStage = (ticketId, newStage) => {
     setTickets((prev) =>
       prev.map((t) => (t.id === Number(ticketId) ? { ...t, stage: newStage } : t))
     );
   };
-
-  // Check off item
   const toggleItemCheck = (ticketId, itemId) => {
     setTickets((prev) =>
       prev.map((t) => {
@@ -293,8 +245,6 @@ function KDS() {
       })
     );
   };
-
-  // Refresh KOTs action
   const handleRefresh = () => {
     try {
       const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
@@ -304,12 +254,8 @@ function KDS() {
       osc.connect(audioCtx.destination);
       osc.start();
       osc.stop(audioCtx.currentTime + 0.15);
-    } catch {
-      // Audio fallback
-    }
+    } catch {}
   };
-
-  // Elapsed time formatter
   const getElapsedString = (startTime) => {
     const elapsedSec = Math.floor((Date.now() - startTime) / 1000);
     const mins = Math.floor(elapsedSec / 60);
@@ -326,7 +272,7 @@ function KDS() {
 
   return (
     <div className="kds-page">
-      {/* Header */}
+
       <div className="kds-header">
         <div className="kds-title-area">
           <h1>Kitchen Display (KDS)</h1>
@@ -334,9 +280,9 @@ function KDS() {
         </div>
       </div>
 
-      {/* Top Toolbar */}
+
       <div className="kds-toolbar">
-        {/* Filters */}
+
         <div className="kds-filters">
           {["All", "Dine-in", "Takeaway", "Delivery"].map((type) => (
             <button
@@ -349,7 +295,7 @@ function KDS() {
           ))}
         </div>
 
-        {/* Counter Badges & Refresh */}
+
         <div className="kds-counters">
           <span className="counter-badge new">New: {newTickets.length}</span>
           <span className="counter-badge preparing">Preparing: {preparingTickets.length}</span>
@@ -361,9 +307,9 @@ function KDS() {
         </div>
       </div>
 
-      {/* Kanban Board Grid */}
+
       <div className="kds-kanban-board">
-        {/* COLUMN 1: NEW ORDERS */}
+
         <div
           className={`kanban-column ${dragOverColumn === "new" ? "drag-over" : ""}`}
           onDragOver={(e) => {
@@ -406,7 +352,7 @@ function KDS() {
           </div>
         </div>
 
-        {/* COLUMN 2: PREPARING */}
+
         <div
           className={`kanban-column ${dragOverColumn === "preparing" ? "drag-over" : ""}`}
           onDragOver={(e) => {
@@ -449,7 +395,7 @@ function KDS() {
           </div>
         </div>
 
-        {/* COLUMN 3: READY FOR PICKUP */}
+
         <div
           className={`kanban-column ${dragOverColumn === "ready" ? "drag-over" : ""}`}
           onDragOver={(e) => {

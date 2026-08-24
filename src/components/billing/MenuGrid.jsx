@@ -1,9 +1,6 @@
 import MenuCard from "./MenuCard";
 
-/**
- * Menu Grid Component
- * Renders filtered list of dish menu cards
- */
+
 function MenuGrid({ menu, addToCart }) {
   return (
     <div className="dishes-grid">

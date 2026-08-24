@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   FaBox,
   FaFolder,
@@ -12,9 +12,8 @@ import {
   FaLink,
   FaTimes
 } from "react-icons/fa";
+import { getProducts, getCategories, createProduct, createCategory } from "../services/api";
 import "../styles/products.css";
-
-// Color palette options matching screenshot
 const COLOR_OPTIONS = [
   { name: "None", bg: "#f1f5f9", color: "#475569" },
   { name: "Red", bg: "#fee2e2", color: "#dc2626" },
@@ -35,8 +34,6 @@ const COLOR_OPTIONS = [
   { name: "Pink", bg: "#fce7f3", color: "#db2777" },
   { name: "Rose", bg: "#ffe4e6", color: "#e11d48" }
 ];
-
-// Predefined tags
 const DEFAULT_TAGS = [
   "Veg", "Non-Veg", "Vegan", "Egg", "Spicy",
   "Contains Nuts", "Gluten-Free", "Dairy-Free",
@@ -46,37 +43,33 @@ const DEFAULT_TAGS = [
 function Products() {
   const [activeTab, setActiveTab] = useState("products");
 
-  // Initial Categories list
-  const [categories, setCategories] = useState([
-    { id: 1, name: "Food", color: "None", description: "Food dishes and meals", active: true },
-    { id: 2, name: "Beverages", color: "None", description: "Hot & cold drinks", active: true }
-  ]);
+  const [categories, setCategories] = useState([]);
+  const [products, setProducts] = useState([]);
 
-  // Initial Products list matching background screenshot
-  const [products, setProducts] = useState([
-    { id: 1, name: "Meal", initials: "ME", badgeColor: "#84cc16", category: "Food", active: true, price: 250 },
-    { id: 2, name: "Tea", initials: "TE", badgeColor: "#84cc16", category: "Beverages", active: true, price: 40 },
-    { id: 3, name: "Coffee", initials: "CO", badgeColor: "#14b8a6", category: "Beverages", active: true, price: 80 },
-    { id: 4, name: "Snack", initials: "SN", badgeColor: "#14b8a6", category: "Food", active: true, price: 120 }
-  ]);
+  useEffect(() => {
+    const loadData = async () => {
+      try {
+        const productData = await getProducts();
+        const categoryData = await getCategories();
+        setProducts(productData.products || []);
+        setCategories(categoryData || []);
+      } catch (error) {
+        console.error('Failed to load products data:', error);
+      }
+    };
 
-  // Addon Groups State
+    loadData();
+  }, []);
   const [addonGroups, setAddonGroups] = useState([
     { id: 1, name: "Extra Cheese", selection: "Optional", active: true },
     { id: 2, name: "Spice Level", selection: "Required", active: true }
   ]);
-
-  // Modals state
   const [showAddCategoryModal, setShowAddCategoryModal] = useState(false);
   const [showAddProductModal, setShowAddProductModal] = useState(false);
-
-  // Category Form State
   const [catName, setCatName] = useState("");
   const [catDesc, setCatDesc] = useState("");
   const [catColor, setCatColor] = useState("None");
   const [catActive, setCatActive] = useState(true);
-
-  // Product Form State
   const [prodName, setProdName] = useState("");
   const [prodCategory, setProdCategory] = useState("Food");
   const [prodSku, setProdSku] = useState("");
@@ -90,58 +83,61 @@ function Products() {
   const [prodTrackInventory, setProdTrackInventory] = useState(false);
   const [prodActive, setProdActive] = useState(true);
   const [prodImageUrl, setProdImageUrl] = useState("");
-
-  // Handlers
-  const handleCreateCategory = (e) => {
+  const handleCreateCategory = async (e) => {
     e.preventDefault();
     if (!catName.trim()) return;
 
-    const newCat = {
-      id: Date.now(),
-      name: catName.trim(),
-      description: catDesc.trim(),
-      color: catColor,
-      active: catActive
-    };
+    try {
+      const newCat = await createCategory({
+        name: catName.trim(),
+        description: catDesc.trim(),
+        color: catColor,
+        active: catActive,
+      });
 
-    setCategories([...categories, newCat]);
-    setCatName("");
-    setCatDesc("");
-    setCatColor("None");
-    setCatActive(true);
-    setShowAddCategoryModal(false);
+      setCategories((prev) => [...prev, newCat]);
+      setCatName("");
+      setCatDesc("");
+      setCatColor("None");
+      setCatActive(true);
+      setShowAddCategoryModal(false);
+    } catch (error) {
+      console.error('Create category failed:', error);
+    }
   };
 
-  const handleCreateProduct = (e) => {
+  const handleCreateProduct = async (e) => {
     e.preventDefault();
     if (!prodName.trim() || !prodPrice) return;
 
-    const initials = prodName.trim().substring(0, 2).toUpperCase();
-    const colors = ["#84cc16", "#14b8a6", "#3b82f6", "#a855f7", "#ec4899", "#f97316"];
-    const randomColor = colors[Math.floor(Math.random() * colors.length)];
+    try {
+      const initials = prodName.trim().substring(0, 2).toUpperCase();
+      const colors = ["#84cc16", "#14b8a6", "#3b82f6", "#a855f7", "#ec4899", "#f97316"];
+      const randomColor = colors[Math.floor(Math.random() * colors.length)];
 
-    const newProd = {
-      id: Date.now(),
-      name: prodName.trim(),
-      initials,
-      badgeColor: randomColor,
-      category: prodCategory,
-      active: prodActive,
-      price: parseFloat(prodPrice) || 0,
-      sku: prodSku,
-      barcode: prodBarcode,
-      tags: prodSelectedTags
-    };
+      const newProd = await createProduct({
+        name: prodName.trim(),
+        initials,
+        badgeColor: randomColor,
+        category: prodCategory,
+        active: prodActive,
+        price: parseFloat(prodPrice) || 0,
+        sku: prodSku,
+        barcode: prodBarcode,
+        tags: prodSelectedTags
+      });
 
-    setProducts([...products, newProd]);
-    // Reset form
-    setProdName("");
-    setProdPrice("");
-    setProdCostPrice("");
-    setProdSku("");
-    setProdBarcode("");
-    setProdCashback(0);
-    setShowAddProductModal(false);
+      setProducts((prev) => [...prev, newProd]);
+      setProdName("");
+      setProdPrice("");
+      setProdCostPrice("");
+      setProdSku("");
+      setProdBarcode("");
+      setProdCashback(0);
+      setShowAddProductModal(false);
+    } catch (error) {
+      console.error('Create product failed:', error);
+    }
   };
 
   const toggleTag = (tag) => {
@@ -194,7 +190,7 @@ function Products() {
       <div className="products-page-header">
         <h1>Products</h1>
 
-        {/* Navigation Tabs */}
+
         <div className="products-tabs-row">
           <div className="products-nav-tabs">
             <button
@@ -217,7 +213,7 @@ function Products() {
             </button>
           </div>
 
-          {/* Action Buttons Top Right */}
+
           <div className="products-actions-right">
             {activeTab === "products" && (
               <>
@@ -253,7 +249,7 @@ function Products() {
         </div>
       </div>
 
-      {/* Products Tab Content */}
+
       {activeTab === "products" && (
         <div className="table-container">
           <table className="custom-table">
@@ -323,7 +319,7 @@ function Products() {
         </div>
       )}
 
-      {/* Categories Tab Content */}
+
       {activeTab === "categories" && (
         <div className="table-container">
           <table className="custom-table">
@@ -397,7 +393,7 @@ function Products() {
         </div>
       )}
 
-      {/* Addon Groups Tab Content */}
+
       {activeTab === "addons" && (
         <div className="table-container">
           <table className="custom-table">
@@ -434,7 +430,7 @@ function Products() {
         </div>
       )}
 
-      {/* ADD CATEGORY MODAL */}
+
       {showAddCategoryModal && (
         <div className="modal-overlay">
           <div className="modal-card">
@@ -506,7 +502,7 @@ function Products() {
         </div>
       )}
 
-      {/* ADD PRODUCT MODAL */}
+
       {showAddProductModal && (
         <div className="modal-overlay">
           <div className="modal-card">
@@ -532,7 +528,7 @@ function Products() {
                 />
               </div>
 
-              {/* Product Image Upload Section */}
+
               <div className="form-group-block">
                 <label className="form-label">Product Image</label>
                 <div className="image-upload-dropzone">
@@ -650,7 +646,7 @@ function Products() {
                 <div className="form-subtext">No tax will be calculated or printed until a tax category is selected.</div>
               </div>
 
-              {/* Tags Section */}
+
               <div className="form-group-block">
                 <label className="form-label">Tags</label>
                 <div className="tags-pills-row">

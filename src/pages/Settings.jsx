@@ -82,7 +82,6 @@ function Settings() {
   return (
     <div className="settings-page">
 
-      {/* Header */}
       <div className="settings-header">
         <div>
           <h1>Settings</h1>
@@ -92,7 +91,6 @@ function Settings() {
 
       <div className="settings-container">
 
-        {/* Settings Sidebar */}
         <div className="settings-sidebar">
           {settingsTabs.map((tab) => (
             <button
@@ -111,11 +109,7 @@ function Settings() {
           ))}
         </div>
 
-        {/* Main Content */}
         <div className="settings-content">
-
-          {/* ================= RESTAURANT DETAILS ================= */}
-
           {activeTab === "restaurant" && (
             <>
               <div className="content-header">
@@ -208,8 +202,6 @@ function Settings() {
             </>
           )}
 
-          {/* ================= GST & CHARGES ================= */}
-
           {activeTab === "gst" && (
             <>
               <div className="content-header">
@@ -218,7 +210,6 @@ function Settings() {
 
               <div className="gst-content">
 
-                {/* GST SECTION */}
 
                 <div className="settings-section">
 
@@ -283,7 +274,6 @@ function Settings() {
 
                 </div>
 
-                {/* SERVICE CHARGE */}
 
                 <div className="settings-section">
 
@@ -334,7 +324,6 @@ function Settings() {
 
                 </div>
 
-                {/* PACKAGING CHARGE */}
 
                 <div className="settings-section">
 
@@ -384,7 +373,6 @@ function Settings() {
 
                 </div>
 
-                {/* TAX MODE */}
 
                 <div className="settings-section">
 
@@ -473,8 +461,6 @@ function Settings() {
             </>
           )}
 
-          {/* ================= PRINTER ================= */}
-
           {activeTab === "printer" && (
   <>
     <div className="content-header">
@@ -483,7 +469,6 @@ function Settings() {
 
     <div className="printer-content">
 
-      {/* Printer Configuration */}
       <div className="settings-section">
 
         <div className="section-heading">
@@ -529,7 +514,6 @@ function Settings() {
 
       </div>
 
-      {/* Printing Options */}
       <div className="settings-section">
 
         <div className="section-heading">
@@ -589,7 +573,6 @@ function Settings() {
 
       </div>
 
-      {/* Test Printer */}
       <div className="settings-section">
 
         <div className="section-heading">
@@ -625,7 +608,6 @@ function Settings() {
   </>
 )}
 
-          {/* ================= DATABASE ================= */}
 {activeTab === "database" && (
   <>
     <div className="content-header">
@@ -634,7 +616,6 @@ function Settings() {
 
     <div className="database-content">
 
-      {/* DATABASE STATUS */}
 
       <div className="settings-section">
 
@@ -680,7 +661,6 @@ function Settings() {
 
       </div>
 
-      {/* SYNC */}
 
       <div className="settings-section">
 
@@ -709,7 +689,6 @@ function Settings() {
 
       </div>
 
-      {/* BACKUP */}
 
       <div className="settings-section">
 
@@ -745,7 +724,6 @@ function Settings() {
 
       </div>
 
-      {/* DANGER ZONE */}
 
       <div className="danger-section">
 
@@ -756,9 +734,8 @@ function Settings() {
             Remove locally stored application data from this device.
             This action cannot be undone.
           </p>
-        </div>
-
-        <button
+            </div>
+            <button
           className="danger-button"
           onClick={() => {
             const confirmed = window.confirm(

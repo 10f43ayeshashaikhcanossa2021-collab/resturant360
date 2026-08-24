@@ -1,25 +1,18 @@
 import { useState } from "react";
 import { FaTimes, FaUsers } from "react-icons/fa";
 
-/**
- * Split Bill Calculator Modal
- * 
- * Allows cashier to split the total bill amount equally among N guests
- * or split items individually.
- */
+
 function SplitBillModal({ isOpen, onClose, total, cartItems }) {
   const [splitType, setSplitType] = useState("people");
   const [peopleCount, setPeopleCount] = useState(2);
 
   if (!isOpen) return null;
-
-  // Calculate per person share
   const perPersonAmount = (total / Math.max(1, peopleCount)).toFixed(2);
 
   return (
     <div className="modal-overlay">
       <div className="modal-content">
-        {/* Modal Header */}
+
         <div className="modal-header">
           <h3><FaUsers /> Split Bill Calculator</h3>
           <button className="close-modal-btn" onClick={onClose}>
@@ -28,7 +21,7 @@ function SplitBillModal({ isOpen, onClose, total, cartItems }) {
         </div>
 
         <div className="modal-body">
-          {/* Toggle Split Method */}
+
           <div className="split-type-toggle">
             <button
               className={splitType === "people" ? "active" : ""}
@@ -55,7 +48,7 @@ function SplitBillModal({ isOpen, onClose, total, cartItems }) {
                 </div>
               </div>
 
-              {/* Per-person calculation result */}
+
               <div className="split-result-box">
                 <span className="result-label">Amount Per Person:</span>
                 <span className="result-value">₹{perPersonAmount}</span>
