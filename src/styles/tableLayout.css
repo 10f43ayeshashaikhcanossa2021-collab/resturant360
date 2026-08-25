@@ -794,6 +794,71 @@
   border-color: var(--accent-orange);
 }
 
+/* Add Floor Modal */
+
+.floor-modal-overlay{
+  position:fixed;
+  inset:0;
+  background:rgba(0,0,0,.65);
+ 
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  z-index:1000;
+}
+
+.floor-modal{
+  width:360px;
+  background:#141a33;
+  border:1px solid rgba(255,255,255,.08);
+  border-radius:16px;
+  padding:24px;
+  color:#fff;
+  box-shadow:0 20px 60px rgba(0,0,0,.45);
+}
+
+.floor-modal h3{
+  margin:0 0 18px;
+}
+
+.floor-modal input{
+  width:100%;
+  padding:12px 14px;
+  border-radius:10px;
+  border:1px solid rgba(255,255,255,.12);
+  background:#0f1630;
+  color:#fff;
+  outline:none;
+}
+
+.floor-modal input:focus{
+  border-color:#ff8a1e;
+}
+
+.floor-modal-actions{
+  display:flex;
+  justify-content:flex-end;
+  gap:10px;
+  margin-top:18px;
+}
+
+.cancel-btn,
+.create-btn{
+  padding:10px 18px;
+  border:none;
+  border-radius:10px;
+  cursor:pointer;
+}
+
+.cancel-btn{
+  background:#232b4d;
+  color:#fff;
+}
+
+.create-btn{
+  background:linear-gradient(90deg,#ff8a1e,#ff6a00);
+  color:#fff;
+}
 
 /* ================================
    RESPONSIVE

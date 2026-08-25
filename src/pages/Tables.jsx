@@ -47,7 +47,8 @@ const navigate = useNavigate();
   const [search, setSearch] = useState("");
 
   const currentTables = floors[activeFloor] || [];
-
+ const [showFloorModal, setShowFloorModal] = useState(false);
+const [newFloorName, setNewFloorName] = useState("");
   const selectedTable =
     currentTables.find((table) => table.id === selectedTableId) ||
     currentTables[0];
@@ -102,28 +103,27 @@ const navigate = useNavigate();
      ADD TABLE
   ========================= */
 
-  const addTable = () => {
-    const current = floors[activeFloor];
+const addTable = () => {
+  const maxNumber = Object.values(floors)
+    .flat()
+    .reduce((max, table) => {
+      const num = parseInt(table.id.replace(/\D/g, "")) || 0;
+      return Math.max(max, num);
+    }, 0);
 
-    const newNumber = current.length + 1;
-
-    const newTable = {
-      id: `T${newNumber}`,
-      seats: 4,
-      status: "available",
-    };
-
-    setFloors((previous) => ({
-      ...previous,
-
-      [activeFloor]: [
-        ...previous[activeFloor],
-        newTable,
-      ],
-    }));
-
-    setSelectedTableId(newTable.id);
+  const newTable = {
+    id: `T${maxNumber + 1}`,
+    seats: 4,
+    status: "available",
   };
+
+  setFloors((prev) => ({
+    ...prev,
+    [activeFloor]: [...(prev[activeFloor] || []), newTable],
+  }));
+
+  setSelectedTableId(newTable.id);
+};
 
   /* =========================
      DELETE TABLE
@@ -170,7 +170,34 @@ const navigate = useNavigate();
 
     setSearch("");
   };
+  /* =========================
+   ADD FLOOR
+========================= */
 
+const handleAddFloor = () => {
+  const name = newFloorName.trim();
+ 
+
+  if (!name) return;
+
+  if (floors[name]) {
+    alert("Floor already exists.");
+    return;
+  }
+
+  setFloors((prev) => ({
+    ...prev,
+    [name]: [],
+  }));
+
+  setActiveFloor(name);
+  setSelectedTableId(null);
+  setSearch("");
+  setNewFloorName("");
+  setShowFloorModal(false);
+};
+
+  
   /* =========================
      OPEN POS
   ========================= */
@@ -259,19 +286,14 @@ const openPOS = () => {
                 }
                 onClick={() =>
                   changeFloor(floor)
+                  
                 }
               >
                 {floor}
               </button>
             ))}
-
-            <button
-              className="add-floor"
-              onClick={() =>
-                alert("Add floor feature coming next")
-              }
-            >
-              +
+            <button className="add-floor" onClick={() => setShowFloorModal(true)}>
+             +
             </button>
 
           </div>
@@ -612,6 +634,42 @@ const openPOS = () => {
         </div>
 
       </div>
+      {showFloorModal && (
+  <div className="floor-modal-overlay">
+    <div className="floor-modal">
+      <h3>Add New Floor</h3>
+
+      <input
+        type="text"
+        placeholder="Enter floor name"
+        value={newFloorName}
+        onChange={(e) => setNewFloorName(e.target.value)}
+        onKeyDown={(e) => {
+          if (e.key === "Enter") handleAddFloor();
+        }}
+      />
+
+      <div className="floor-modal-actions">
+        <button
+          className="cancel-btn"
+          onClick={() => {
+            setShowFloorModal(false);
+            setNewFloorName("");
+          }}
+        >
+          Cancel
+        </button>
+
+        <button
+          className="create-btn"
+          onClick={handleAddFloor}
+        >
+          Create Floor
+        </button>
+      </div>
+    </div>
+  </div>
+)}
 
     </div>
   );
