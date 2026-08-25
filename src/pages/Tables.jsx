@@ -1,6 +1,7 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import "../styles/tableLayout.css";
 import { useNavigate } from "react-router-dom";
+import { getTables, updateTableStatus } from "../services/api";
 
 const initialFloors = {
   "Ground Floor": [
@@ -39,8 +40,24 @@ const statusLabels = {
 
 function Tables() {
   const [floors, setFloors] = useState(initialFloors);
-const navigate = useNavigate();
+  const navigate = useNavigate();
   const [activeFloor, setActiveFloor] = useState("Ground Floor");
+
+  useEffect(() => {
+    const loadTables = async () => {
+      try {
+        const data = await getTables();
+        if (data && typeof data === 'object') {
+          setFloors(data);
+          setActiveFloor(Object.keys(data)[0] || 'Ground Floor');
+        }
+      } catch (error) {
+        console.error('Failed to load tables:', error);
+      }
+    };
+
+    loadTables();
+  }, []);
 
   const [selectedTableId, setSelectedTableId] = useState("T1");
 
@@ -53,9 +70,7 @@ const [newFloorName, setNewFloorName] = useState("");
     currentTables.find((table) => table.id === selectedTableId) ||
     currentTables[0];
 
-  /* =========================
-     SEARCH
-  ========================= */
+
 
   const filteredTables = useMemo(() => {
     return currentTables.filter((table) =>
@@ -63,9 +78,7 @@ const [newFloorName, setNewFloorName] = useState("");
     );
   }, [currentTables, search]);
 
-  /* =========================
-     STATUS COUNT
-  ========================= */
+
 
   const statusCount = (status) => {
     return currentTables.filter(
@@ -73,35 +86,34 @@ const [newFloorName, setNewFloorName] = useState("");
     ).length;
   };
 
-  /* =========================
-     SELECT TABLE
-  ========================= */
+
 
   const selectTable = (table) => {
     setSelectedTableId(table.id);
   };
 
-  /* =========================
-     CHANGE STATUS
-  ========================= */
 
-  const changeStatus = (status) => {
+
+  const changeStatus = async (status) => {
     if (!selectedTable) return;
 
-    setFloors((previous) => ({
-      ...previous,
+    try {
+      await updateTableStatus(selectedTable.id, status);
+      setFloors((previous) => ({
+        ...previous,
 
-      [activeFloor]: previous[activeFloor].map((table) =>
-        table.id === selectedTable.id
-          ? { ...table, status }
-          : table
-      ),
-    }));
+        [activeFloor]: previous[activeFloor].map((table) =>
+          table.id === selectedTable.id
+            ? { ...table, status }
+            : table
+        ),
+      }));
+    } catch (error) {
+      console.error('Failed to update table status:', error);
+    }
   };
 
-  /* =========================
-     ADD TABLE
-  ========================= */
+
 
 const addTable = () => {
   const maxNumber = Object.values(floors)
@@ -125,9 +137,7 @@ const addTable = () => {
   setSelectedTableId(newTable.id);
 };
 
-  /* =========================
-     DELETE TABLE
-  ========================= */
+
 
   const deleteTable = () => {
     if (!selectedTable) return;
@@ -155,9 +165,7 @@ const addTable = () => {
     );
   };
 
-  /* =========================
-     CHANGE FLOOR
-  ========================= */
+
 
   const changeFloor = (floor) => {
     setActiveFloor(floor);
@@ -197,10 +205,14 @@ const handleAddFloor = () => {
   setShowFloorModal(false);
 };
 
+
   
   /* =========================
      OPEN POS
   ========================= */
+
+
+
 const openPOS = () => {
   if (!selectedTable) return;
 
@@ -210,9 +222,7 @@ const openPOS = () => {
   return (
     <div className="tables-page">
 
-      {/* =========================
-          HEADER
-      ========================= */}
+
 
       <div className="tables-page-header">
 
@@ -262,15 +272,11 @@ const openPOS = () => {
 
       </div>
 
-      {/* =========================
-          CONTENT
-      ========================= */}
+
 
       <div className="tables-content">
 
-        {/* =========================
-            TOOLBAR
-        ========================= */}
+
 
         <div className="tables-toolbar">
 
@@ -298,7 +304,7 @@ const openPOS = () => {
 
           </div>
 
-          {/* STATUS */}
+
 
           <div className="table-status">
 
@@ -324,7 +330,7 @@ const openPOS = () => {
 
           </div>
 
-          {/* ACTIONS */}
+
 
           <div className="table-actions">
 
@@ -346,15 +352,11 @@ const openPOS = () => {
 
         </div>
 
-        {/* =========================
-            WORKSPACE
-        ========================= */}
+
 
         <div className="tables-workspace">
 
-          {/* =========================
-              TABLE GRID
-          ========================= */}
+
 
           <div className="tables-grid">
 
@@ -414,9 +416,7 @@ const openPOS = () => {
 
           </div>
 
-          {/* =========================
-              RIGHT PANEL
-          ========================= */}
+
 
           {selectedTable ? (
 
@@ -436,7 +436,7 @@ const openPOS = () => {
 
               </div>
 
-              {/* OPEN POS */}
+
 
               <button
                 className="open-pos"
@@ -445,7 +445,7 @@ const openPOS = () => {
                 ₹ &nbsp; Take Order / Open POS
               </button>
 
-              {/* INFO */}
+
 
               <div className="table-info">
 
@@ -471,9 +471,7 @@ const openPOS = () => {
 
               </div>
 
-              {/* =========================
-                  UPDATE STATUS
-              ========================= */}
+
 
               <div className="details-section">
 
@@ -557,9 +555,7 @@ const openPOS = () => {
 
               </div>
 
-              {/* =========================
-                  ERP OPERATIONS
-              ========================= */}
+
 
               <div className="details-section">
 

@@ -6,7 +6,6 @@
   overflow-y: auto;
 }
 
-/* Header */
 
 .settings-header {
   margin-bottom: 20px;
@@ -23,7 +22,6 @@
   font-size: 14px;
 }
 
-/* Main Settings Layout */
 
 .settings-container {
   display: grid;
@@ -32,7 +30,6 @@
   min-height: 600px;
 }
 
-/* Left Menu */
 
 .settings-sidebar {
   background: var(--bg-panel);
@@ -78,7 +75,6 @@
   font-size: 20px;
 }
 
-/* Right Content */
 
 .settings-content {
   background: var(--bg-panel);
@@ -98,7 +94,6 @@
   font-weight: 700;
 }
 
-/* Form */
 
 .form-content {
   padding: 30px 28px;
@@ -149,7 +144,6 @@
   border-color: var(--accent-orange);
 }
 
-/* Save Button */
 
 .save-section {
   padding: 17px 28px;
@@ -178,7 +172,6 @@
   transform: translateY(-1px);
 }
 
-/* Other Settings Pages */
 
 .placeholder-settings {
   padding: 35px;
@@ -194,7 +187,6 @@
   font-size: 14px;
 }
 
-/* Responsive */
 
 @media (max-width: 900px) {
   .settings-container {
@@ -215,10 +207,6 @@
     gap: 25px;
   }
 }
-/* =========================================
-   GST & CHARGES
-========================================= */
-
 .gst-content {
   padding: 26px 28px;
   max-height: 520px;
@@ -254,7 +242,6 @@
   font-size: 12px;
 }
 
-/* Toggle */
 
 .switch {
   position: relative;
@@ -299,14 +286,12 @@
   transform: translateX(21px);
 }
 
-/* GST Rates */
 
 .gst-rate-row {
   margin-top: 24px;
   margin-bottom: 0;
 }
 
-/* Input with % / ₹ */
 
 .input-with-symbol {
   position: relative;
@@ -331,7 +316,6 @@
   margin-top: 22px;
 }
 
-/* Tax Options */
 
 .tax-options {
   display: grid;
@@ -382,7 +366,6 @@
   line-height: 1.5;
 }
 
-/* Responsive */
 
 @media (max-width: 900px) {
   .single-setting {
@@ -393,10 +376,6 @@
     grid-template-columns: 1fr;
   }
 }
-/* =========================================
-   RECEIPT PRINTER
-========================================= */
-
 .printer-content {
   padding: 26px 28px;
   max-height: 520px;
@@ -430,7 +409,6 @@
   color: var(--text-main);
 }
 
-/* Printer Options */
 
 .printer-options {
   margin-top: 20px;
@@ -465,7 +443,6 @@
   font-size: 11px;
 }
 
-/* Test Print */
 
 .test-print-button {
   margin-top: 20px;
@@ -488,10 +465,6 @@
   border-color: var(--accent-orange);
   color: var(--accent-orange);
 }
-/* =========================================
-   DATABASE & SYNC
-========================================= */
-
 .database-content {
   padding: 26px 28px;
   max-height: 520px;
@@ -518,7 +491,6 @@
   box-shadow: 0 0 8px rgba(34, 197, 94, 0.7);
 }
 
-/* Database Info */
 
 .database-info-grid {
   display: grid;
@@ -553,7 +525,6 @@
   color: #22c55e;
 }
 
-/* Sync */
 
 .sync-time {
   color: var(--text-muted);
@@ -582,7 +553,6 @@
   transform: translateY(-1px);
 }
 
-/* Backup */
 
 .backup-actions {
   display: flex;
@@ -611,7 +581,6 @@
   color: var(--accent-orange);
 }
 
-/* Danger Zone */
 
 .danger-section {
   margin-top: 25px;
@@ -656,7 +625,6 @@
   background: rgba(239, 68, 68, 0.1);
 }
 
-/* Responsive */
 
 @media (max-width: 1000px) {
   .database-info-grid {

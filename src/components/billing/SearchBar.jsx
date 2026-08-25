@@ -1,14 +1,10 @@
 import { FaSearch } from "react-icons/fa";
 
-/**
- * Menu Search and Food Type Filter Bar
- * 
- * Provides live dish search input and food type pills (All, Veg, Non-Veg).
- */
+
 function SearchBar({ search, setSearch, foodType, setFoodType }) {
   return (
     <div className="search-container-row">
-      {/* Live Text Search Field */}
+
       <div className="search-input-wrapper">
         <FaSearch className="search-icon" />
         <input
@@ -19,7 +15,7 @@ function SearchBar({ search, setSearch, foodType, setFoodType }) {
         />
       </div>
 
-      {/* Diet / Food Type Filter Pills */}
+
       <div className="food-type-filter">
         <button
           className={foodType === "All" ? "active" : ""}

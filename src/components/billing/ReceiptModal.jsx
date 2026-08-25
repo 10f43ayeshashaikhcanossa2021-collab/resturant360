@@ -1,19 +1,12 @@
 import { FaPrint, FaTimes } from "react-icons/fa";
 
-/**
- * Printable Thermal Tax Invoice / KOT Modal
- * 
- * Generates formatted print slip for Save & Print or KOT & Print.
- * Uses native window.print() and CSS @media print styles to print formatted receipts.
- */
+
 function ReceiptModal({ isOpen, onClose, cartItems, total, orderType, table, paymentMethod, isKotOnly }) {
   if (!isOpen) return null;
 
   const handlePrint = () => {
     window.print();
   };
-
-  // Generate random order reference code
   const orderId = "ORD-" + Math.floor(100000 + Math.random() * 900000);
   const now = new Date().toLocaleString();
 
@@ -27,7 +20,7 @@ function ReceiptModal({ isOpen, onClose, cartItems, total, orderType, table, pay
           </button>
         </div>
 
-        {/* Printable thermal receipt container target for print media */}
+
         <div className="receipt-paper" id="printable-receipt">
           <div className="receipt-header">
             <h2>Restaurant360</h2>
@@ -45,7 +38,7 @@ function ReceiptModal({ isOpen, onClose, cartItems, total, orderType, table, pay
 
           <div className="receipt-divider">--------------------------------</div>
 
-          {/* Purchased Items List */}
+
           <table className="receipt-table">
             <thead>
               <tr>
@@ -67,7 +60,7 @@ function ReceiptModal({ isOpen, onClose, cartItems, total, orderType, table, pay
 
           <div className="receipt-divider">--------------------------------</div>
 
-          {/* Financial Breakdown (Hidden for KOT tickets) */}
+
           {!isKotOnly && (
             <div className="receipt-summary">
               <div className="summary-row">
@@ -95,7 +88,7 @@ function ReceiptModal({ isOpen, onClose, cartItems, total, orderType, table, pay
           </div>
         </div>
 
-        {/* Modal Action Controls */}
+
         <div className="modal-actions">
           <button className="primary-red-btn print-btn" onClick={handlePrint}>
             <FaPrint /> Print Now

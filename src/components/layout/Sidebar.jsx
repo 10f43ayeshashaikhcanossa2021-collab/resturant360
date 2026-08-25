@@ -16,21 +16,7 @@ import {
 } from "react-icons/fa";
 import "../../styles/sidebar.css";
 
-/**
- * Sidebar Navigation Component
- * 
- * Includes the updated 10-item menu layout matching the restaurant360 system navigation:
- * 1. Overview Dashboard
- * 2. Billing Counter (POS)
- * 3. Menu & Dishes
- * 4. Table Layout
- * 5. Kitchen Orders (KDS)
- * 6. Stock & Inventory
- * 7. Loyalty & Customers
- * 8. Analytics & Reports
- * 9. AI Analyst Chatbot
- * 10. System Settings
- */
+
 function Sidebar({ isCollapsed, setIsCollapsed }) {
   const navItems = [
     { path: "/", label: "Overview Dashboard", icon: FaThLarge, end: true },
@@ -48,7 +34,7 @@ function Sidebar({ isCollapsed, setIsCollapsed }) {
   return (
     <aside className={`sidebar ${isCollapsed ? "collapsed" : ""}`}>
       <div className="sidebar-top">
-        {/* Brand Logo Container */}
+
         <div className="logo-container">
           <span className="logo-text">
             {isCollapsed ? (
@@ -61,7 +47,7 @@ function Sidebar({ isCollapsed, setIsCollapsed }) {
           </span>
         </div>
 
-        {/* Navigation Links */}
+
         <nav className="sidebar-nav">
           {navItems.map((item) => {
             const IconComponent = item.icon;
@@ -79,7 +65,7 @@ function Sidebar({ isCollapsed, setIsCollapsed }) {
                       <IconComponent className="menu-icon" />
                       {!isCollapsed && <span>{item.label}</span>}
                     </div>
-                    {/* Orange active indicator bar shown only for active route */}
+
                     {isActive && !isCollapsed && <div className="active-indicator"></div>}
                   </>
                 )}
@@ -89,7 +75,7 @@ function Sidebar({ isCollapsed, setIsCollapsed }) {
         </nav>
       </div>
 
-      {/* Sidebar Bottom Controls */}
+
       <div className="sidebar-bottom">
         <button className="logout-btn" title="Logout">
           <FaSignOutAlt />

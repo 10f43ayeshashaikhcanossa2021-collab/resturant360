@@ -12,12 +12,7 @@ import {
 } from "react-icons/fa";
 import "../../styles/header.css";
 
-/**
- * Header Component
- * 
- * Provides quick status toggles, branch selection dropdown, dark/light theme switcher,
- * browser fullscreen controls, and interactive notification drawer UI.
- */
+
 function Header({ isDarkMode, setIsDarkMode }) {
   const [isOnline, setIsOnline] = useState(true);
   const [store, setStore] = useState("rahul");
@@ -27,15 +22,11 @@ function Header({ isDarkMode, setIsDarkMode }) {
 
   const notifRef = useRef(null);
   const storeRef = useRef(null);
-
-  // Mock list of POS notifications
   const [notifications, setNotifications] = useState([
     { id: 1, title: "New Order Received", text: "Table T9 placed order #104 (₹294)", time: "2 mins ago", unread: true },
     { id: 2, title: "KOT Status Update", text: "Kitchen marked Chicken 65 Ready", time: "5 mins ago", unread: true },
     { id: 3, title: "Loyalty Points Claimed", text: "Customer +91 9876543210 redeemed 50 pts", time: "12 mins ago", unread: false }
   ]);
-
-  // Click outside to close dropdowns
   useEffect(() => {
     function handleClickOutside(event) {
       if (notifRef.current && !notifRef.current.contains(event.target)) {
@@ -50,8 +41,6 @@ function Header({ isDarkMode, setIsDarkMode }) {
       document.removeEventListener("mousedown", handleClickOutside);
     };
   }, []);
-
-  // Native Fullscreen API trigger
   const toggleFullscreen = () => {
     if (!document.fullscreenElement) {
       document.documentElement.requestFullscreen().then(() => setIsFullscreen(true)).catch(() => {});
@@ -61,8 +50,6 @@ function Header({ isDarkMode, setIsDarkMode }) {
       }
     }
   };
-
-  // Marks all notifications as read
   const markAllRead = () => {
     setNotifications(notifications.map((n) => ({ ...n, unread: false })));
   };
@@ -71,15 +58,15 @@ function Header({ isDarkMode, setIsDarkMode }) {
 
   return (
     <header className="header">
-      {/* Title & Subtitle */}
+
       <div className="header-left">
         <h1>POS / Billing</h1>
         <p>Process orders and manage billing.</p>
       </div>
 
-      {/* Header Actions Toolbar */}
+
       <div className="header-right">
-        {/* Online/Offline Status Pill Toggle */}
+
         <button
           className={`status-pill ${isOnline ? "online" : "offline"}`}
           onClick={() => setIsOnline(!isOnline)}
@@ -89,7 +76,7 @@ function Header({ isDarkMode, setIsDarkMode }) {
           <span>{isOnline ? "Online" : "Offline"}</span>
         </button>
 
-        {/* Store / Branch Selector Dropdown */}
+
         <div className="store-pill-wrapper" ref={storeRef}>
           <button
             className="store-pill"
@@ -123,7 +110,7 @@ function Header({ isDarkMode, setIsDarkMode }) {
           )}
         </div>
 
-        {/* Dark / Light Mode Theme Switcher */}
+
         <button
           className="header-icon-btn theme-toggle-btn"
           title={isDarkMode ? "Switch to Light Mode" : "Switch to Dark Mode"}
@@ -132,7 +119,7 @@ function Header({ isDarkMode, setIsDarkMode }) {
           {isDarkMode ? <FaSun className="sun-icon" /> : <FaMoon className="moon-icon" />}
         </button>
 
-        {/* Fullscreen Mode Button */}
+
         <button
           className="header-icon-btn"
           title={isFullscreen ? "Exit Fullscreen" : "Enter Fullscreen"}
@@ -141,7 +128,7 @@ function Header({ isDarkMode, setIsDarkMode }) {
           {isFullscreen ? <FaCompress /> : <FaExpand />}
         </button>
 
-        {/* Notification Bell & Interactive Drawer */}
+
         <div className="notification-wrapper" ref={notifRef}>
           <button
             className={`header-icon-btn notification-btn ${showNotifications ? "active" : ""}`}
@@ -201,7 +188,7 @@ function Header({ isDarkMode, setIsDarkMode }) {
           )}
         </div>
 
-        {/* Cashier User Profile Avatar */}
+
         <div className="user-profile">
           <div className="avatar-circle">CA</div>
           <div className="user-info">

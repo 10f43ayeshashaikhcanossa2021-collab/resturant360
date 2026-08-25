@@ -1,4 +1,4 @@
-/* Kitchen Display System (KDS) Page Layout */
+
 .kds-page {
   display: flex;
   flex-direction: column;
@@ -11,7 +11,7 @@
   user-select: none;
 }
 
-/* Header Section */
+
 .kds-header {
   display: flex;
   justify-content: space-between;
@@ -33,7 +33,7 @@
   margin: 3px 0 0 0;
 }
 
-/* Top Toolbar: Filters & Counters */
+
 .kds-toolbar {
   display: flex;
   justify-content: space-between;
@@ -73,7 +73,7 @@
   border-color: var(--accent-orange);
 }
 
-/* Counter Badges */
+
 .kds-counters {
   display: flex;
   align-items: center;
@@ -125,7 +125,7 @@
   color: var(--accent-orange);
 }
 
-/* Kanban Columns Board Grid */
+
 .kds-kanban-board {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
@@ -177,7 +177,7 @@
   color: var(--text-sub);
 }
 
-/* Kanban Tickets Scroll Area */
+
 .column-tickets-list {
   flex: 1;
   padding: 12px;
@@ -205,7 +205,7 @@
   opacity: 0.4;
 }
 
-/* WHOLE SLIDABLE / DRAGGABLE KOT ORDER CARD BOX */
+
 .kot-card {
   background: var(--bg-card);
   border: 1px solid var(--border-color);
@@ -268,7 +268,7 @@
   color: var(--text-muted);
 }
 
-/* Timer Badge */
+
 .kot-timer-pill {
   display: flex;
   align-items: center;
@@ -301,7 +301,7 @@
   100% { opacity: 1; }
 }
 
-/* Items List in Ticket */
+
 .kot-items-list {
   display: flex;
   flex-direction: column;
@@ -348,7 +348,7 @@
   color: var(--text-sub);
 }
 
-/* Special Instructions Box */
+
 .special-notes-box {
   background: rgba(245, 158, 11, 0.1);
   border: 1px solid rgba(245, 158, 11, 0.25);
@@ -362,7 +362,7 @@
   gap: 6px;
 }
 
-/* BOTTOM SLIDE-GUIDE FOOTER ON WHOLE CARD */
+
 .card-slide-footer {
   display: flex;
   align-items: center;
@@ -395,7 +395,7 @@
   50% { transform: translateX(4px); }
 }
 
-/* Dedicated Mark Served Button on Ready Column Cards */
+
 .done-action-btn {
   background: linear-gradient(180deg, #22c55e 0%, #16a34a 100%);
   color: #ffffff;
