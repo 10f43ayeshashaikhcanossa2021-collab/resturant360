@@ -10,7 +10,8 @@ import {
   FaMinus,
   FaPlus,
   FaChevronDown,
-  FaCheckCircle
+  FaCheckCircle,
+  FaReceipt
 } from "react-icons/fa";
 import { createOrder } from "../../services/api";
 import ReceiptModal from "./ReceiptModal";
@@ -27,7 +28,7 @@ function CartSection({ cartItems, setCartItems, addToCart }) {
   const [isPaid, setIsPaid] = useState(true);
   const [loyalty, setLoyalty] = useState(true);
   const [virtualWallet, setVirtualWallet] = useState(false);
-  const [isAcActive, setIsAcActive] = useState(true);
+  const [isAcActive, setIsAcActive] = useState(false);
   const [showReceipt, setShowReceipt] = useState(false);
   const [receiptCartCopy, setReceiptCartCopy] = useState([]);
   const [isKotOnly, setIsKotOnly] = useState(false);
@@ -35,10 +36,12 @@ function CartSection({ cartItems, setCartItems, addToCart }) {
   const [showHistoryModal, setShowHistoryModal] = useState(false);
   const [toastMessage, setToastMessage] = useState("");
   const [heldOrders, setHeldOrders] = useState([]);
+
   const showToast = (msg) => {
     setToastMessage(msg);
     setTimeout(() => setToastMessage(""), 3000);
   };
+
   const updateQuantity = (id, change) => {
     setCartItems((prevItems) =>
       prevItems
@@ -52,9 +55,12 @@ function CartSection({ cartItems, setCartItems, addToCart }) {
         .filter(Boolean)
     );
   };
+
   const removeItem = (id) => {
     setCartItems((prevItems) => prevItems.filter((item) => item.id !== id));
   };
+
+  // Subtotal calculation
   const subtotal = cartItems.reduce(
     (sum, item) => sum + item.price * item.qty,
     0
@@ -63,14 +69,12 @@ function CartSection({ cartItems, setCartItems, addToCart }) {
   const discValue = parseFloat(discount) || 0;
   const acCharge = isAcActive ? Math.round(subtotal * 0.05) : 0;
 
+  // Exact total calculation (280 stays 280)
   let rawTotal = subtotal + acCharge - discValue;
   if (salesReturn) rawTotal = -Math.abs(rawTotal);
-  const computedTotal = subtotal > 0
-    ? (subtotal === 280 && !discount && !salesReturn ? 294 : Math.max(0, rawTotal))
-    : 0;
+  const computedTotal = subtotal > 0 ? Math.max(0, rawTotal) : 0;
 
-
-  const handleSave = async (print = false, kot = false, ebill = false) => {
+  const handleSave = async (print = true, kot = false, ebill = false) => {
     if (cartItems.length === 0) {
       showToast("⚠️ Cart is empty! Add dishes first.");
       return;
@@ -104,16 +108,16 @@ function CartSection({ cartItems, setCartItems, addToCart }) {
         if (print) {
           setShowReceipt(true);
         } else {
-          showToast("✅ KOT sent to Kitchen! Items list cleared.");
+          showToast("✅ KOT sent to Kitchen!");
         }
       } else if (ebill) {
         const phoneNum = phone || "Customer Phone";
-        showToast(`📱 E-Bill sent via WhatsApp to ${phoneNum}! Items list cleared.`);
+        showToast(`📱 E-Bill sent via WhatsApp to ${phoneNum}!`);
       } else if (print) {
         setIsKotOnly(false);
         setShowReceipt(true);
       } else {
-        showToast(`🎉 Order Saved! Paid ₹${computedTotal}. Items list cleared.`);
+        showToast(`🎉 Order Placed! Paid ₹${computedTotal}.`);
       }
 
       setCartItems([]);
@@ -123,7 +127,6 @@ function CartSection({ cartItems, setCartItems, addToCart }) {
       showToast(`❌ ${error.message || 'Could not send order to kitchen.'}`);
     }
   };
-
 
   const handleHold = () => {
     if (cartItems.length === 0) {
@@ -140,8 +143,9 @@ function CartSection({ cartItems, setCartItems, addToCart }) {
     setHeldOrders([newHold, ...heldOrders]);
     setCartItems([]);
     setDiscount("");
-    showToast(`⏸️ Order for ${table} placed on HOLD. Items list cleared.`);
+    showToast(`⏸️ Order for ${table} placed on HOLD.`);
   };
+
   const resumeHeldOrder = (order) => {
     setCartItems(order.items);
     setTable(order.table);
@@ -152,14 +156,14 @@ function CartSection({ cartItems, setCartItems, addToCart }) {
 
   return (
     <div className="cart-section">
-
+      {/* Toast Notification Banner */}
       {toastMessage && (
         <div className="cart-toast-banner">
           <FaCheckCircle /> <span>{toastMessage}</span>
         </div>
       )}
 
-
+      {/* Order Type Tabs */}
       <div className="order-type-tabs">
         <button
           className={orderType === "DINE IN" ? "active" : ""}
@@ -181,7 +185,7 @@ function CartSection({ cartItems, setCartItems, addToCart }) {
         </button>
       </div>
 
-
+      {/* Quick Action Toolbar */}
       <div className="quick-action-bar">
         <button
           className={`action-icon-btn ${activeIcon === "ACT9" ? "active" : ""}`}
@@ -221,7 +225,7 @@ function CartSection({ cartItems, setCartItems, addToCart }) {
         <button
           className={`action-icon-btn ${activeIcon === "kitchen" ? "active" : ""}`}
           onClick={() => handleSave(false, true, false)}
-          title="Send to Kitchen (KOT)"
+          title="Send KOT to Kitchen"
         >
           <FaUtensils />
         </button>
@@ -237,7 +241,7 @@ function CartSection({ cartItems, setCartItems, addToCart }) {
           className={`ac-btn ${isAcActive ? "active" : "inactive"}`}
           onClick={() => {
             setIsAcActive(!isAcActive);
-            showToast(isAcActive ? "AC Surcharge removed" : "AC Surcharge (+5%) added");
+            showToast(!isAcActive ? "AC Surcharge (+5%) added" : "AC Surcharge removed");
           }}
           title="Toggle AC Charge"
         >
@@ -245,7 +249,7 @@ function CartSection({ cartItems, setCartItems, addToCart }) {
         </button>
       </div>
 
-
+      {/* Cart Controls Row */}
       <div className="cart-controls-row">
         {orderType === "DINE IN" ? (
           <div className="select-wrapper">
@@ -267,7 +271,6 @@ function CartSection({ cartItems, setCartItems, addToCart }) {
           />
         )}
 
-
         <input
           type="text"
           placeholder="Phone (Loyalty)..."
@@ -281,7 +284,6 @@ function CartSection({ cartItems, setCartItems, addToCart }) {
           className="cart-input"
         />
 
-
         <input
           type="number"
           placeholder="Disc (₹)"
@@ -291,7 +293,7 @@ function CartSection({ cartItems, setCartItems, addToCart }) {
         />
       </div>
 
-
+      {/* Cart Table Header */}
       <div className="cart-table-header">
         <span className="col-items">ITEMS</span>
         <span className="col-check">CHECK ITEMS</span>
@@ -299,7 +301,7 @@ function CartSection({ cartItems, setCartItems, addToCart }) {
         <span className="col-price">PRICE</span>
       </div>
 
-
+      {/* Cart Items List */}
       <div className="cart-items-list">
         {cartItems.length === 0 ? (
           <div className="empty-cart-msg">No items in cart</div>
@@ -353,9 +355,8 @@ function CartSection({ cartItems, setCartItems, addToCart }) {
         )}
       </div>
 
-
+      {/* Cart Bottom Panel */}
       <div className="cart-bottom-panel">
-
         <div className="offers-total-row">
           <div className="offers-left">
             <button
@@ -384,12 +385,12 @@ function CartSection({ cartItems, setCartItems, addToCart }) {
           </div>
 
           <div className="total-badge">
-            <span className="total-label">$ Total</span>
+            <span className="total-label">₹ Total</span>
             <span className="total-amount">{computedTotal}</span>
           </div>
         </div>
 
-
+        {/* Payment Methods Row */}
         <div className="payment-methods-row">
           {["Cash", "Card", "Due", "Other", "Part"].map((method) => (
             <label key={method} className="radio-label">
@@ -408,7 +409,7 @@ function CartSection({ cartItems, setCartItems, addToCart }) {
           ))}
         </div>
 
-
+        {/* Flags Row */}
         <div className="flags-row">
           <label className="checkbox-label">
             <input
@@ -438,31 +439,19 @@ function CartSection({ cartItems, setCartItems, addToCart }) {
           </label>
         </div>
 
-
-        <div className="action-buttons-grid">
-          <button className="primary-red-btn" onClick={() => handleSave(false, false, false)}>
-            SAVE
-          </button>
-          <button className="primary-red-btn" onClick={() => handleSave(true, false, false)}>
-            SAVE & PRINT
-          </button>
-          <button className="primary-red-btn" onClick={() => handleSave(false, false, true)}>
-            SAVE & EBILL
-          </button>
-
-          <button className="secondary-dark-btn" onClick={() => handleSave(false, true, false)}>
-            KOT
-          </button>
-          <button className="secondary-dark-btn" onClick={() => handleSave(true, true, false)}>
-            KOT & PRINT
-          </button>
-          <button className="secondary-dark-btn" onClick={handleHold}>
-            HOLD
+        {/* SINGLE FULL-WIDTH PRIMARY CHECKOUT ACTION BUTTON */}
+        <div className="single-action-wrapper">
+          <button
+            className="single-checkout-btn"
+            onClick={() => handleSave(true, false, false)}
+          >
+            <FaReceipt />
+            <span>PLACE ORDER & GENERATE BILL (₹{computedTotal})</span>
           </button>
         </div>
       </div>
 
-
+      {/* Receipt Modal */}
       <ReceiptModal
         isOpen={showReceipt}
         onClose={() => setShowReceipt(false)}
@@ -474,7 +463,7 @@ function CartSection({ cartItems, setCartItems, addToCart }) {
         isKotOnly={isKotOnly}
       />
 
-
+      {/* Split Bill Modal */}
       <SplitBillModal
         isOpen={showSplitModal}
         onClose={() => setShowSplitModal(false)}
@@ -482,7 +471,7 @@ function CartSection({ cartItems, setCartItems, addToCart }) {
         cartItems={cartItems}
       />
 
-
+      {/* Held Orders Modal */}
       {showHistoryModal && (
         <div className="modal-overlay">
           <div className="modal-content">
