@@ -1,22 +1,29 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import SearchBar from "./SearchBar";
 import CategoryTabs from "./CategoryTabs";
 import MenuGrid from "./MenuGrid";
-import menuData from "../../data/menuData";
+import { getMenu } from "../../services/api";
 
-/**
- * Menu Section Container Component
- * 
- * Manages search text, food type, and category filter states to compute
- * the filtered list of menu items.
- */
+
 function MenuSection({ addToCart }) {
   const [search, setSearch] = useState("");
   const [foodType, setFoodType] = useState("All");
   const [category, setCategory] = useState("All");
+  const [menuData, setMenuData] = useState([]);
 
-  // Dynamic search and multi-criteria category filtering
-  const filteredMenu = menuData.filter((item) => {
+  useEffect(() => {
+    const loadMenu = async () => {
+      try {
+        const data = await getMenu();
+        setMenuData(data || []);
+      } catch (error) {
+        console.error('Failed to load menu:', error);
+      }
+    };
+
+    loadMenu();
+  }, []);
+  const filteredMenu = (menuData || []).filter((item) => {
     const matchSearch = item.name
       .toLowerCase()
       .includes(search.toLowerCase());
@@ -32,7 +39,7 @@ function MenuSection({ addToCart }) {
 
   return (
     <div className="menu-section-container">
-      {/* Search Input & Veg/Non-Veg Filter */}
+
       <SearchBar
         search={search}
         setSearch={setSearch}
@@ -40,13 +47,13 @@ function MenuSection({ addToCart }) {
         setFoodType={setFoodType}
       />
 
-      {/* Category Selection Tabs */}
+
       <CategoryTabs
         category={category}
         setCategory={setCategory}
       />
 
-      {/* Filtered Dishes Grid */}
+
       <MenuGrid menu={filteredMenu} addToCart={addToCart} />
     </div>
   );

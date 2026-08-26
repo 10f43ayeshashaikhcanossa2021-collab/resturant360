@@ -1,41 +1,41 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
 
 :root {
-  --bg-dark: #0b0d17;
-  --bg-sidebar: #0c0e18;
-  --bg-header: #0c0e18;
-  --bg-card: #181b2b;
-  --bg-panel: #121422;
-  --bg-input: #181b2b;
-  --bg-hover: rgba(255, 255, 255, 0.05);
-  --border-color: rgba(255, 255, 255, 0.07);
-  --accent-orange: #f97316;
-  --accent-orange-hover: #ea580c;
+  --bg-dark: #0a0d16;
+  --bg-sidebar: #0e1220;
+  --bg-header: #101827;
+  --bg-card: rgba(20, 25, 37, 0.94);
+  --bg-panel: rgba(13, 18, 29, 0.98);
+  --bg-input: #121a2b;
+  --bg-hover: rgba(255, 255, 255, 0.06);
+  --border-color: rgba(148, 163, 184, 0.18);
+  --accent-orange: #fb923c;
+  --accent-orange-hover: #f97316;
   --accent-red: #ef4444;
   --accent-red-hover: #dc2626;
-  --accent-yellow: #f59e0b;
-  --text-main: #ffffff;
-  --text-muted: #8b92a5;
-  --text-sub: #6b7280;
+  --accent-yellow: #fbbf24;
+  --text-main: #f8fafc;
+  --text-muted: #cbd5e1;
+  --text-sub: #94a3b8;
   --font-family: 'Inter', system-ui, -apple-system, sans-serif;
-  --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.2);
-  --shadow-md: 0 8px 24px rgba(0, 0, 0, 0.4);
+  --shadow-sm: 0 8px 18px rgba(15, 23, 42, 0.22);
+  --shadow-md: 0 20px 45px rgba(2, 6, 23, 0.46);
 }
 
 .light-theme {
-  --bg-dark: #f1f5f9;
+  --bg-dark: #edf3f8;
   --bg-sidebar: #ffffff;
   --bg-header: #ffffff;
   --bg-card: #ffffff;
-  --bg-panel: #ffffff;
-  --bg-input: #f8fafc;
-  --bg-hover: #f1f5f9;
-  --border-color: #e2e8f0;
+  --bg-panel: #f8fafc;
+  --bg-input: #f1f5f9;
+  --bg-hover: #e2e8f0;
+  --border-color: rgba(148, 163, 184, 0.36);
   --text-main: #0f172a;
-  --text-muted: #64748b;
-  --text-sub: #94a3b8;
-  --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.05);
-  --shadow-md: 0 8px 24px rgba(0, 0, 0, 0.08);
+  --text-muted: #475569;
+  --text-sub: #64748b;
+  --shadow-sm: 0 6px 15px rgba(15, 23, 42, 0.08);
+  --shadow-md: 0 18px 30px rgba(15, 23, 42, 0.12);
 }
 
 * {
@@ -46,10 +46,12 @@
 
 html, body, #root {
   width: 100%;
-  height: 100vh;
+  min-height: 100vh;
   margin: 0;
   padding: 0;
-  background-color: var(--bg-dark);
+  background:
+    radial-gradient(circle at top left, rgba(251, 146, 60, 0.12), transparent 20%),
+    linear-gradient(135deg, #090d16 0%, #101827 40%, #0c1320 100%);
   color: var(--text-main);
   font-family: var(--font-family);
   overflow: hidden;
@@ -66,7 +68,7 @@ input, select {
   font-family: var(--font-family);
 }
 
-/* Custom Scrollbar */
+
 ::-webkit-scrollbar {
   width: 5px;
   height: 5px;

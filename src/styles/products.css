@@ -1,4 +1,4 @@
-/* Products Page Container */
+
 .products-page {
   padding: 24px;
   height: 100%;
@@ -19,7 +19,7 @@
   margin-bottom: 16px;
 }
 
-/* Top Tabs Container */
+
 .products-tabs-row {
   display: flex;
   justify-content: space-between;
@@ -68,7 +68,7 @@
   border-radius: 4px;
 }
 
-/* Action Header Buttons */
+
 .products-actions-right {
   display: flex;
   align-items: center;
@@ -135,7 +135,7 @@
   background: var(--bg-hover);
 }
 
-/* Data Tables */
+
 .table-container {
   background: var(--bg-card);
   border: 1px solid var(--border-color);
@@ -176,7 +176,7 @@
   background-color: var(--bg-hover);
 }
 
-/* Product Badge Cell */
+
 .product-cell {
   display: flex;
   align-items: center;
@@ -209,7 +209,7 @@
   font-size: 14px;
 }
 
-/* Status Badges */
+
 .status-badge {
   display: inline-block;
   padding: 3px 10px;
@@ -228,7 +228,7 @@
   color: var(--text-sub);
 }
 
-/* Action Icons */
+
 .actions-cell {
   display: flex;
   align-items: center;
@@ -252,7 +252,7 @@
   color: #ef4444;
 }
 
-/* Color Swatch Dot */
+
 .color-indicator-swatch {
   width: 16px;
   height: 16px;
@@ -260,7 +260,7 @@
   display: inline-block;
 }
 
-/* Modals */
+
 .modal-overlay {
   position: fixed;
   inset: 0;
@@ -366,7 +366,7 @@
   margin-top: 4px;
 }
 
-/* Color Palette Grid */
+
 .color-palette-grid {
   display: flex;
   flex-wrap: wrap;
@@ -394,7 +394,7 @@
   font-weight: 700;
 }
 
-/* Drag and Drop Image Box */
+
 .image-upload-dropzone {
   border: 2px dashed #cbd5e1;
   border-radius: 12px;
@@ -469,14 +469,14 @@
   border-color: #94a3b8;
 }
 
-/* Form Two Column Row */
+
 .form-row-2col {
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 12px;
 }
 
-/* Tags Section */
+
 .tags-pills-row {
   display: flex;
   flex-wrap: wrap;
@@ -527,7 +527,7 @@
   background: #e2e8f0;
 }
 
-/* Form Checkbox */
+
 .form-checkbox-row {
   display: flex;
   align-items: center;
@@ -551,7 +551,7 @@
   height: 15px;
 }
 
-/* Modal Primary Submit Button */
+
 .modal-submit-btn {
   width: 100%;
   background: #0f172a;

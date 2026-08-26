@@ -1,6 +1,4 @@
-/* ================================
-   TABLE MANAGEMENT PAGE
-================================ */
+
 
 .tables-page {
   width: 100%;
@@ -13,9 +11,7 @@
 }
 
 
-/* ================================
-   HEADER
-================================ */
+
 
 .tables-page-header {
   height: 72px;
@@ -43,7 +39,7 @@
 }
 
 
-/* Header Right */
+
 
 .table-header-actions {
   display: flex;
@@ -139,9 +135,7 @@
 }
 
 
-/* ================================
-   CONTENT
-================================ */
+
 
 .tables-content {
   flex: 1;
@@ -157,9 +151,7 @@
 }
 
 
-/* ================================
-   TOOLBAR
-================================ */
+
 
 .tables-toolbar {
   min-height: 40px;
@@ -172,7 +164,7 @@
 }
 
 
-/* Floor Tabs */
+
 
 .floor-tabs {
   display: flex;
@@ -224,7 +216,7 @@
 }
 
 
-/* Status */
+
 
 .table-status {
   display: flex;
@@ -266,7 +258,7 @@
 }
 
 
-/* Actions */
+
 
 .table-actions {
   display: flex;
@@ -313,9 +305,7 @@
 }
 
 
-/* ================================
-   WORKSPACE
-================================ */
+
 
 .tables-workspace {
   flex: 1;
@@ -331,9 +321,7 @@
 }
 
 
-/* ================================
-   TABLE GRID
-================================ */
+
 
 .tables-grid {
   display: grid;
@@ -354,7 +342,7 @@
 }
 
 
-/* Table Card */
+
 
 .table-card {
   height: 110px;
@@ -398,11 +386,9 @@
     0 0 0 1px rgba(249, 115, 22, 0.15),
     0 6px 18px rgba(249, 115, 22, 0.08);
 }
-/* =================================
-   TABLE STATUS COLORS
-================================= */
 
-/* ---------- AVAILABLE ---------- */
+
+
 
 .table-card.status-available .table-circle {
   background: rgba(34, 197, 94, 0.12);
@@ -426,7 +412,7 @@
 }
 
 
-/* ---------- OCCUPIED ---------- */
+
 
 .table-card.status-occupied .table-circle {
   background: rgba(245, 158, 11, 0.12);
@@ -450,7 +436,7 @@
 }
 
 
-/* ---------- RESERVED ---------- */
+
 
 .table-card.status-reserved .table-circle {
   background: rgba(59, 130, 246, 0.12);
@@ -474,7 +460,7 @@
 }
 
 
-/* ---------- BILLING ---------- */
+
 
 .table-card.status-billing .table-circle {
   background: rgba(239, 68, 68, 0.12);
@@ -496,9 +482,7 @@
     0 0 0 1px rgba(239, 68, 68, 0.2),
     0 6px 18px rgba(239, 68, 68, 0.12);
 }
-/* =================================
-   DETAILS STATUS BADGES
-================================= */
+
 
 .available-badge.badge-available {
   background: rgba(34, 197, 94, 0.12);
@@ -524,7 +508,7 @@
   background: rgba(168, 85, 247, 0.12);
   color: #a855f7;
 }
-/* Table Card Top */
+
 
 .table-card-top {
   width: 100%;
@@ -544,7 +528,7 @@
 }
 
 
-/* Table Icon */
+
 
 .table-circle {
    width: 34px;
@@ -585,9 +569,7 @@
 }
 
 
-/* ================================
-   RIGHT DETAILS PANEL
-================================ */
+
 
 .table-details-panel {
   background: var(--bg-card);
@@ -608,7 +590,7 @@
 }
 
 
-/* Details Header */
+
 
 .details-title {
   display: flex;
@@ -637,7 +619,7 @@
 }
 
 
-/* POS Button */
+
 
 .open-pos {
   width: 100%;
@@ -664,7 +646,7 @@
 }
 
 
-/* Info */
+
 
 .table-info {
   border: 1px solid var(--border-color);
@@ -697,7 +679,7 @@
 }
 
 
-/* Sections */
+
 
 .details-section {
   margin-top: 14px;
@@ -715,7 +697,7 @@
 }
 
 
-/* Status Buttons */
+
 
 .status-grid {
   display: grid;
@@ -757,7 +739,7 @@
 }
 
 
-/* ERP */
+
 
 .erp-list {
   display: flex;
@@ -795,9 +777,7 @@
 }
 
 
-/* ================================
-   RESPONSIVE
-================================ */
+
 
 @media (max-width: 1100px) {
 

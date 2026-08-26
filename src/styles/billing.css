@@ -1,10 +1,10 @@
-/* Main Layout */
+
 .billing-page-layout {
   display: flex;
-  gap: 12px;
+  gap: 14px;
   height: 100%;
-  padding: 12px;
-  background-color: var(--bg-dark);
+  padding: 14px;
+  background: rgba(10, 13, 22, 0.32);
   box-sizing: border-box;
   overflow: hidden;
   position: relative;
@@ -27,21 +27,22 @@
   flex-direction: column;
 }
 
-/* Left Panel Component Container */
+
 .menu-section-container {
-  background-color: var(--bg-panel);
-  border-radius: 12px;
+  background: linear-gradient(180deg, rgba(17, 24, 39, 0.96), rgba(8, 12, 21, 0.96));
+  border-radius: 18px;
   border: 1px solid var(--border-color);
-  padding: 14px;
+  padding: 16px;
   height: 100%;
   display: flex;
   flex-direction: column;
   box-sizing: border-box;
   overflow: hidden;
-  transition: background-color 0.3s ease, border-color 0.3s ease;
+  box-shadow: var(--shadow-sm);
+  transition: background-color 0.3s ease, border-color 0.3s ease, transform 0.2s ease;
 }
 
-/* Search and Food Filter Row */
+
 .search-container-row {
   display: flex;
   align-items: center;
@@ -131,7 +132,7 @@
   background-color: #ef4444;
 }
 
-/* Category Tabs */
+
 .category-tabs-container {
   display: flex;
   gap: 8px;
@@ -164,7 +165,7 @@
   border-color: var(--accent-orange);
 }
 
-/* Dishes Grid */
+
 .dishes-grid {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
@@ -175,21 +176,22 @@
 }
 
 .dish-card {
-  background: var(--bg-card);
-  border-radius: 12px;
-  border: 1px solid var(--border-color);
+  background: linear-gradient(180deg, rgba(22, 29, 42, 0.96), rgba(15, 21, 32, 0.94));
+  border-radius: 14px;
+  border: 1px solid rgba(148, 163, 184, 0.18);
   padding: 14px;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  min-height: 120px;
+  min-height: 128px;
   transition: transform 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.02);
 }
 
 .dish-card:hover {
-  border-color: rgba(249, 115, 22, 0.4);
-  transform: translateY(-2px);
-  box-shadow: var(--shadow-sm);
+  border-color: rgba(251, 146, 60, 0.65);
+  transform: translateY(-3px);
+  box-shadow: 0 14px 24px rgba(15, 23, 42, 0.22);
 }
 
 .card-top-row {
@@ -277,10 +279,10 @@
   transform: scale(1.15);
 }
 
-/* Right Cart Section Container */
+
 .cart-section {
-  background-color: var(--bg-panel);
-  border-radius: 12px;
+  background: linear-gradient(180deg, rgba(17, 24, 39, 0.96), rgba(9, 13, 22, 0.98));
+  border-radius: 18px;
   border: 1px solid var(--border-color);
   padding: 12px;
   height: 100%;
@@ -289,10 +291,11 @@
   box-sizing: border-box;
   overflow: hidden;
   position: relative;
+  box-shadow: var(--shadow-md);
   transition: background-color 0.3s ease, border-color 0.3s ease;
 }
 
-/* Toast Banner */
+
 .cart-toast-banner {
   position: absolute;
   top: 10px;
@@ -311,36 +314,38 @@
   box-shadow: 0 4px 14px rgba(0, 0, 0, 0.4);
 }
 
-/* Order Type Tabs */
+
 .order-type-tabs {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: 3px;
-  background: var(--bg-input);
-  padding: 3px;
-  border-radius: 8px;
-  margin-bottom: 10px;
+  gap: 4px;
+  background: rgba(15, 23, 42, 0.9);
+  padding: 4px;
+  border-radius: 12px;
+  margin-bottom: 12px;
+  border: 1px solid var(--border-color);
 }
 
 .order-type-tabs button {
   background: transparent;
   border: none;
   color: var(--text-muted);
-  padding: 8px 0;
+  padding: 9px 0;
   font-size: 11.5px;
-  font-weight: 700;
+  font-weight: 800;
+  letter-spacing: 0.04em;
   cursor: pointer;
-  border-radius: 6px;
+  border-radius: 9px;
   transition: all 0.2s ease;
 }
 
 .order-type-tabs button.active {
-  background: var(--accent-orange);
-  color: #ffffff;
-  box-shadow: 0 2px 8px rgba(249, 115, 22, 0.3);
+  background: linear-gradient(180deg, #fb923c 0%, #f97316 100%);
+  color: #fff;
+  box-shadow: 0 8px 16px rgba(249, 115, 22, 0.35);
 }
 
-/* Quick Action Bar */
+
 .quick-action-bar {
   display: flex;
   gap: 5px;
@@ -422,7 +427,7 @@
   box-shadow: none;
 }
 
-/* Cart Controls Row */
+
 .cart-controls-row {
   display: flex;
   gap: 6px;
@@ -478,7 +483,7 @@
   flex: none;
 }
 
-/* Cart Table Header */
+
 .cart-table-header {
   display: flex;
   font-size: 10px;
@@ -495,7 +500,7 @@
 .col-qty { flex: 1; text-align: center; }
 .col-price { flex: 1.2; text-align: right; }
 
-/* Cart Items List */
+
 .cart-items-list {
   flex: 1;
   overflow-y: auto;
@@ -616,7 +621,7 @@
   font-size: 9.5px;
 }
 
-/* Cart Bottom Panel */
+
 .cart-bottom-panel {
   display: flex;
   flex-direction: column;
@@ -668,25 +673,27 @@
 }
 
 .total-badge {
-  background: var(--accent-orange);
+  background: linear-gradient(180deg, #fb923c 0%, #f97316 100%);
   color: #ffffff;
-  padding: 4px 12px;
-  border-radius: 6px;
+  padding: 6px 12px;
+  border-radius: 10px;
   display: flex;
   align-items: center;
   gap: 8px;
-  box-shadow: 0 4px 12px rgba(249, 115, 22, 0.3);
+  box-shadow: 0 10px 18px rgba(249, 115, 22, 0.3);
 }
 
 .total-label {
   font-size: 11px;
-  font-weight: 600;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  opacity: 0.95;
 }
 
 .total-amount {
-  font-size: 18px;
+  font-size: 20px;
   font-weight: 800;
-  color: #fef08a;
+  color: #fff6d6;
 }
 
 .payment-methods-row {
@@ -738,19 +745,20 @@
   background: linear-gradient(180deg, #ef4444 0%, #dc2626 100%);
   color: #ffffff;
   border: none;
-  padding: 9.5px 0;
-  border-radius: 6px;
-  font-weight: 700;
+  padding: 10px 0;
+  border-radius: 10px;
+  font-weight: 800;
   font-size: 11px;
+  letter-spacing: 0.04em;
   cursor: pointer;
-  box-shadow: 0 3px 10px rgba(239, 68, 68, 0.25);
+  box-shadow: 0 10px 18px rgba(239, 68, 68, 0.24);
   transition: all 0.2s ease;
 }
 
 .primary-red-btn:hover {
-  background: linear-gradient(180deg, #f87171 0%, #ea580c 100%);
+  background: linear-gradient(180deg, #f87171 0%, #ef4444 100%);
   transform: translateY(-1px);
-  box-shadow: 0 5px 14px rgba(239, 68, 68, 0.35);
+  box-shadow: 0 12px 18px rgba(239, 68, 68, 0.32);
 }
 
 .primary-red-btn:active {
@@ -758,21 +766,22 @@
 }
 
 .secondary-dark-btn {
-  background: var(--bg-card);
+  background: linear-gradient(180deg, rgba(19, 25, 37, 0.9), rgba(10, 15, 24, 0.9));
   border: 1px solid var(--border-color);
   color: var(--text-main);
-  padding: 9.5px 0;
-  border-radius: 6px;
-  font-weight: 700;
+  padding: 10px 0;
+  border-radius: 10px;
+  font-weight: 800;
   font-size: 11px;
+  letter-spacing: 0.04em;
   cursor: pointer;
   transition: all 0.2s ease;
 }
 
 .secondary-dark-btn:hover {
-  background-color: var(--bg-hover);
-  border-color: var(--accent-orange);
-  color: var(--accent-orange);
+  background-color: rgba(251, 146, 60, 0.08);
+  border-color: rgba(251, 146, 60, 0.5);
+  color: #fed7aa;
   transform: translateY(-1px);
 }
 
@@ -780,7 +789,7 @@
   transform: translateY(1px);
 }
 
-/* Modals */
+
 .modal-overlay {
   position: fixed;
   inset: 0;
@@ -830,7 +839,7 @@
   cursor: pointer;
 }
 
-/* Receipt Paper Style */
+
 .receipt-paper {
   background: #ffffff;
   color: #000000;
@@ -921,7 +930,7 @@
   gap: 6px;
 }
 
-/* Split Modal */
+
 .split-type-toggle {
   display: flex;
   background: var(--bg-input);
@@ -1003,7 +1012,7 @@
   font-size: 11px;
 }
 
-/* Print CSS */
+
 @media print {
   body * {
     visibility: hidden;

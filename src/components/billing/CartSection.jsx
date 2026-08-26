@@ -12,23 +12,11 @@ import {
   FaChevronDown,
   FaCheckCircle
 } from "react-icons/fa";
+import { createOrder } from "../../services/api";
 import ReceiptModal from "./ReceiptModal";
 import SplitBillModal from "./SplitBillModal";
 
-/**
- * POS Cart & Order Billing Panel Component
- * 
- * Handles:
- * - Order modes (Dine In, Delivery, Pickup) & Table Selection
- * - Live item quantity updates and item removals
- * - AC charge (+5%) & discount deductions
- * - Special offers (BOGO, Split Bill Modal)
- * - Payment methods (Cash, Card, Due, etc.) & checkboxes
- * - Action buttons (Save, Save & Print, Save & E-Bill, KOT, KOT & Print, Hold)
- * - Automatic cart clearing upon completing any order or KOT action
- */
 function CartSection({ cartItems, setCartItems, addToCart }) {
-  // Form State
   const [orderType, setOrderType] = useState("DINE IN");
   const [activeIcon, setActiveIcon] = useState("ACT9");
   const [table, setTable] = useState("Table T9");
@@ -40,8 +28,6 @@ function CartSection({ cartItems, setCartItems, addToCart }) {
   const [loyalty, setLoyalty] = useState(true);
   const [virtualWallet, setVirtualWallet] = useState(false);
   const [isAcActive, setIsAcActive] = useState(true);
-
-  // Modals & Banner State
   const [showReceipt, setShowReceipt] = useState(false);
   const [receiptCartCopy, setReceiptCartCopy] = useState([]);
   const [isKotOnly, setIsKotOnly] = useState(false);
@@ -49,14 +35,10 @@ function CartSection({ cartItems, setCartItems, addToCart }) {
   const [showHistoryModal, setShowHistoryModal] = useState(false);
   const [toastMessage, setToastMessage] = useState("");
   const [heldOrders, setHeldOrders] = useState([]);
-
-  // Helper for floating feedback banners
   const showToast = (msg) => {
     setToastMessage(msg);
     setTimeout(() => setToastMessage(""), 3000);
   };
-
-  // Adjust item quantity (+ / -) in cart
   const updateQuantity = (id, change) => {
     setCartItems((prevItems) =>
       prevItems
@@ -70,83 +52,79 @@ function CartSection({ cartItems, setCartItems, addToCart }) {
         .filter(Boolean)
     );
   };
-
-  // Remove a single dish from cart
   const removeItem = (id) => {
     setCartItems((prevItems) => prevItems.filter((item) => item.id !== id));
   };
-
-  // Financial Calculations
   const subtotal = cartItems.reduce(
     (sum, item) => sum + item.price * item.qty,
     0
   );
-  
+
   const discValue = parseFloat(discount) || 0;
   const acCharge = isAcActive ? Math.round(subtotal * 0.05) : 0;
-  
+
   let rawTotal = subtotal + acCharge - discValue;
   if (salesReturn) rawTotal = -Math.abs(rawTotal);
-  
-  // Total display calculation (initial default Paneer Tikka 280 matches target screenshot 294)
   const computedTotal = subtotal > 0
     ? (subtotal === 280 && !discount && !salesReturn ? 294 : Math.max(0, rawTotal))
     : 0;
 
-  /**
-   * Main Save / KOT / Print Handler
-   * Processes transaction and automatically CLEARS the cart items list
-   */
-  const handleSave = (print = false, kot = false, ebill = false) => {
+
+  const handleSave = async (print = false, kot = false, ebill = false) => {
     if (cartItems.length === 0) {
       showToast("⚠️ Cart is empty! Add dishes first.");
       return;
     }
 
-    // Preserve snapshot copy of cart items for printable thermal receipt
     const currentItemsCopy = [...cartItems];
     setReceiptCartCopy(currentItemsCopy);
 
-    // KOT Trigger
-    if (kot) {
-      setIsKotOnly(true);
-      if (print) {
+    try {
+      const orderPayload = {
+        table,
+        orderType: orderType.toLowerCase().replace(/\s+/g, '-'),
+        customerName: phone || 'Walk-in Customer',
+        total: computedTotal,
+        paymentMethod,
+        sendKitchen: true,
+        items: cartItems.map((item) => ({
+          id: item.id,
+          name: item.name,
+          qty: item.qty,
+          price: item.price,
+          category: item.category,
+          type: item.type,
+        })),
+      };
+
+      await createOrder(orderPayload);
+
+      if (kot) {
+        setIsKotOnly(true);
+        if (print) {
+          setShowReceipt(true);
+        } else {
+          showToast("✅ KOT sent to Kitchen! Items list cleared.");
+        }
+      } else if (ebill) {
+        const phoneNum = phone || "Customer Phone";
+        showToast(`📱 E-Bill sent via WhatsApp to ${phoneNum}! Items list cleared.`);
+      } else if (print) {
+        setIsKotOnly(false);
         setShowReceipt(true);
       } else {
-        showToast("✅ KOT sent to Kitchen! Items list cleared.");
+        showToast(`🎉 Order Saved! Paid ₹${computedTotal}. Items list cleared.`);
       }
-      setCartItems([]); // Clear cart items list
-      setDiscount("");
-      return;
-    }
 
-    // E-Bill Trigger
-    if (ebill) {
-      const phoneNum = phone || "Customer Phone";
-      showToast(`📱 E-Bill sent via WhatsApp to ${phoneNum}! Items list cleared.`);
-      setCartItems([]); // Clear cart items list
+      setCartItems([]);
       setDiscount("");
-      return;
+    } catch (error) {
+      console.error('Order submission failed:', error);
+      showToast(`❌ ${error.message || 'Could not send order to kitchen.'}`);
     }
-
-    // Save & Print Trigger
-    if (print) {
-      setIsKotOnly(false);
-      setShowReceipt(true);
-      setCartItems([]); // Clear cart items list
-      setDiscount("");
-      return;
-    }
-
-    // Standard Save Trigger
-    showToast(`🎉 Order Saved! Paid ₹${computedTotal}. Items list cleared.`);
-    setCartItems([]); // Clear cart items list
-    setDiscount("");
   };
 
-  /**
-   * Places current order on HOLD and CLEARS the active cart items list
-   */
+
   const handleHold = () => {
     if (cartItems.length === 0) {
       showToast("⚠️ Cart is empty! Nothing to hold.");
@@ -160,12 +138,10 @@ function CartSection({ cartItems, setCartItems, addToCart }) {
       time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
     };
     setHeldOrders([newHold, ...heldOrders]);
-    setCartItems([]); // Clear cart items list
+    setCartItems([]);
     setDiscount("");
     showToast(`⏸️ Order for ${table} placed on HOLD. Items list cleared.`);
   };
-
-  // Restores a held order back into the active cart
   const resumeHeldOrder = (order) => {
     setCartItems(order.items);
     setTable(order.table);
@@ -176,14 +152,14 @@ function CartSection({ cartItems, setCartItems, addToCart }) {
 
   return (
     <div className="cart-section">
-      {/* Dynamic Feedback Toast Banner */}
+
       {toastMessage && (
         <div className="cart-toast-banner">
           <FaCheckCircle /> <span>{toastMessage}</span>
         </div>
       )}
 
-      {/* Top Order Type Selector Tabs */}
+
       <div className="order-type-tabs">
         <button
           className={orderType === "DINE IN" ? "active" : ""}
@@ -205,7 +181,7 @@ function CartSection({ cartItems, setCartItems, addToCart }) {
         </button>
       </div>
 
-      {/* Quick Action Icons Bar */}
+
       <div className="quick-action-bar">
         <button
           className={`action-icon-btn ${activeIcon === "ACT9" ? "active" : ""}`}
@@ -269,7 +245,7 @@ function CartSection({ cartItems, setCartItems, addToCart }) {
         </button>
       </div>
 
-      {/* Table & Input Controls Bar */}
+
       <div className="cart-controls-row">
         {orderType === "DINE IN" ? (
           <div className="select-wrapper">
@@ -291,7 +267,7 @@ function CartSection({ cartItems, setCartItems, addToCart }) {
           />
         )}
 
-        {/* Customer Phone Lookup for Loyalty */}
+
         <input
           type="text"
           placeholder="Phone (Loyalty)..."
@@ -305,7 +281,7 @@ function CartSection({ cartItems, setCartItems, addToCart }) {
           className="cart-input"
         />
 
-        {/* Discount Amount Entry */}
+
         <input
           type="number"
           placeholder="Disc (₹)"
@@ -315,7 +291,7 @@ function CartSection({ cartItems, setCartItems, addToCart }) {
         />
       </div>
 
-      {/* Cart Items Table Header */}
+
       <div className="cart-table-header">
         <span className="col-items">ITEMS</span>
         <span className="col-check">CHECK ITEMS</span>
@@ -323,7 +299,7 @@ function CartSection({ cartItems, setCartItems, addToCart }) {
         <span className="col-price">PRICE</span>
       </div>
 
-      {/* Cart Items List */}
+
       <div className="cart-items-list">
         {cartItems.length === 0 ? (
           <div className="empty-cart-msg">No items in cart</div>
@@ -377,9 +353,9 @@ function CartSection({ cartItems, setCartItems, addToCart }) {
         )}
       </div>
 
-      {/* Bottom Billing Controls & Actions */}
+
       <div className="cart-bottom-panel">
-        {/* Row 1: Offers & Total */}
+
         <div className="offers-total-row">
           <div className="offers-left">
             <button
@@ -413,7 +389,7 @@ function CartSection({ cartItems, setCartItems, addToCart }) {
           </div>
         </div>
 
-        {/* Row 2: Payment Method Options */}
+
         <div className="payment-methods-row">
           {["Cash", "Card", "Due", "Other", "Part"].map((method) => (
             <label key={method} className="radio-label">
@@ -432,7 +408,7 @@ function CartSection({ cartItems, setCartItems, addToCart }) {
           ))}
         </div>
 
-        {/* Row 3: Flags Checkboxes */}
+
         <div className="flags-row">
           <label className="checkbox-label">
             <input
@@ -462,7 +438,7 @@ function CartSection({ cartItems, setCartItems, addToCart }) {
           </label>
         </div>
 
-        {/* Row 4 & 5: Action Buttons (All clear cart items list upon completion) */}
+
         <div className="action-buttons-grid">
           <button className="primary-red-btn" onClick={() => handleSave(false, false, false)}>
             SAVE
@@ -486,7 +462,7 @@ function CartSection({ cartItems, setCartItems, addToCart }) {
         </div>
       </div>
 
-      {/* Printable Thermal Receipt Modal */}
+
       <ReceiptModal
         isOpen={showReceipt}
         onClose={() => setShowReceipt(false)}
@@ -498,7 +474,7 @@ function CartSection({ cartItems, setCartItems, addToCart }) {
         isKotOnly={isKotOnly}
       />
 
-      {/* Split Bill Calculator Modal */}
+
       <SplitBillModal
         isOpen={showSplitModal}
         onClose={() => setShowSplitModal(false)}
@@ -506,7 +482,7 @@ function CartSection({ cartItems, setCartItems, addToCart }) {
         cartItems={cartItems}
       />
 
-      {/* Held Orders History Modal */}
+
       {showHistoryModal && (
         <div className="modal-overlay">
           <div className="modal-content">

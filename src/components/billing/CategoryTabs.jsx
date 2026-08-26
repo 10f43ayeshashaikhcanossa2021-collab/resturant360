@@ -1,4 +1,3 @@
-// Available menu categories for horizontal filtering
 const categories = [
   "All",
   "Starters",
@@ -8,10 +7,7 @@ const categories = [
   "Desserts",
 ];
 
-/**
- * Category Tabs Row
- * Horizontal filter buttons for quick category switching
- */
+
 function CategoryTabs({ category, setCategory }) {
   return (
     <div className="category-tabs-container">
