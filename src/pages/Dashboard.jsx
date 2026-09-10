@@ -1,5 +1,35 @@
 import { useEffect, useState } from "react";
-import { getDashboardSummary, getOrders, getReports } from "../services/api";
+import {
+  LineChart,
+  Line,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  ResponsiveContainer,
+  PieChart,
+  Pie,
+  Cell,
+  BarChart,
+  Bar,
+  Legend,
+} from "recharts";
+
+import {
+  DollarSign,
+  ShoppingCart,
+  Users,
+  Receipt,
+  TrendingUp,
+} from "lucide-react";
+
+import {
+  getDashboardSummary,
+  getOrders,
+  getReports,
+} from "../services/api";
+
+const COLORS = ["#ff7a00", "#2563eb", "#16a34a", "#ef4444"];
 
 function Dashboard() {
   const [summary, setSummary] = useState({
@@ -7,14 +37,16 @@ function Dashboard() {
     orders: 0,
     avgTicket: 0,
     occupancy: 0,
-    topSelling: []
+    topSelling: [],
   });
+
   const [orders, setOrders] = useState([]);
+
   const [report, setReport] = useState({
     todaySales: 0,
     weeklySales: 0,
     growth: 0,
-    topCategory: "-"
+    topCategory: "-",
   });
 
   useEffect(() => {
@@ -23,60 +55,311 @@ function Dashboard() {
         const [dashboard, orderList, sales] = await Promise.all([
           getDashboardSummary(),
           getOrders(),
-          getReports()
+          getReports(),
         ]);
 
-        setSummary(dashboard || summary);
+        setSummary(dashboard || {});
         setOrders(orderList || []);
-        setReport(sales || report);
-      } catch (error) {
-        console.error("Dashboard load failed:", error);
+        setReport(sales || {});
+      } catch (err) {
+        console.log(err);
       }
     };
 
     loadData();
   }, []);
 
+  // Temporary graph data (replace later with backend data)
+  const revenueData = [
+    { day: "Mon", revenue: 12000 },
+    { day: "Tue", revenue: 15000 },
+    { day: "Wed", revenue: 18000 },
+    { day: "Thu", revenue: 16000 },
+    { day: "Fri", revenue: 25000 },
+    { day: "Sat", revenue: 32000 },
+    { day: "Sun", revenue: 28000 },
+  ];
+
+  const orderStatus = [
+    { name: "Completed", value: 62 },
+    { name: "Preparing", value: 18 },
+    { name: "Pending", value: 12 },
+    { name: "Cancelled", value: 8 },
+  ];
+
+  const topItems = [
+    { item: "Paneer Tikka", qty: 85 },
+    { item: "Pizza", qty: 72 },
+    { item: "Burger", qty: 60 },
+    { item: "Pasta", qty: 42 },
+    { item: "Cold Coffee", qty: 30 },
+  ];
+
   const cards = [
-    { label: "Revenue", value: `₹${summary.revenue.toLocaleString("en-IN")}` },
-    { label: "Orders", value: summary.orders },
-    { label: "Avg Ticket", value: `₹${summary.avgTicket}` },
-    { label: "Occupancy", value: `${summary.occupancy}%` }
+    {
+      title: "Revenue",
+      value: `₹${summary.revenue.toLocaleString("en-IN")}`,
+      icon: <DollarSign size={24} />,
+      color: "#16a34a",
+    },
+    {
+      title: "Orders",
+      value: summary.orders,
+      icon: <ShoppingCart size={24} />,
+      color: "#2563eb",
+    },
+    {
+      title: "Average Bill",
+      value: `₹${summary.avgTicket}`,
+      icon: <Receipt size={24} />,
+      color: "#ff7a00",
+    },
+    {
+      title: "Occupancy",
+      value: `${summary.occupancy}%`,
+      icon: <Users size={24} />,
+      color: "#7c3aed",
+    },
   ];
 
   return (
-    <div style={{ padding: "24px", color: "var(--text-main)" }}>
-      <h2>Overview Dashboard</h2>
+    <div style={{ padding: 24, color: "#fff", background: "#0f172a", minHeight: "100vh" }}>
+      <h1 style={{ marginBottom: 5 }}>Restaurant Dashboard</h1>
+      <p style={{ color: "#94a3b8" }}>
+        Live overview of sales, orders and restaurant performance.
+      </p>
 
-      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(180px, 1fr))", gap: "16px", marginTop: "20px" }}>
+      {/* KPI Cards */}
+
+      <div
+        style={{
+          display: "grid",
+          gridTemplateColumns: "repeat(auto-fit,minmax(220px,1fr))",
+          gap: 20,
+          marginTop: 25,
+        }}
+      >
         {cards.map((card) => (
-          <div key={card.label} style={{ background: "#111827", borderRadius: "12px", padding: "18px", border: "1px solid #1f2937" }}>
-            <div style={{ color: "#9ca3af", fontSize: "12px", textTransform: "uppercase" }}>{card.label}</div>
-            <div style={{ marginTop: "8px", fontSize: "28px", fontWeight: 700 }}>{card.value}</div>
+          <div
+            key={card.title}
+            style={{
+              background: "#1e293b",
+              borderRadius: 18,
+              padding: 20,
+              border: "1px solid #334155",
+            }}
+          >
+            <div
+              style={{
+                display: "flex",
+                justifyContent: "space-between",
+                alignItems: "center",
+              }}
+            >
+              <div>
+                <div style={{ color: "#94a3b8", fontSize: 13 }}>{card.title}</div>
+                <h2 style={{ margin: "8px 0" }}>{card.value}</h2>
+              </div>
+
+              <div
+                style={{
+                  background: card.color + "22",
+                  padding: 12,
+                  borderRadius: 12,
+                  color: card.color,
+                }}
+              >
+                {card.icon}
+              </div>
+            </div>
+
+            <div
+              style={{
+                color: "#16a34a",
+                display: "flex",
+                alignItems: "center",
+                gap: 5,
+                marginTop: 12,
+                fontSize: 13,
+              }}
+            >
+              <TrendingUp size={16} />
+              +{report.growth}% this week
+            </div>
           </div>
         ))}
       </div>
 
-      <div style={{ display: "grid", gridTemplateColumns: "1.2fr 0.8fr", gap: "20px", marginTop: "24px" }}>
-        <div style={{ background: "#111827", padding: "18px", borderRadius: "12px" }}>
-          <h3 style={{ marginBottom: "12px" }}>Recent Orders</h3>
-          {orders.slice(0, 5).map((order) => (
-            <div key={order.id} style={{ display: "flex", justifyContent: "space-between", padding: "10px 0", borderBottom: "1px solid #1f2937" }}>
-              <span>{order.id}</span>
-              <span>{order.table}</span>
-              <span>{order.status}</span>
-              <span>₹{order.total}</span>
-            </div>
-          ))}
+      {/* Charts */}
+
+      <div
+        style={{
+          display: "grid",
+          gridTemplateColumns: "2fr 1fr",
+          gap: 20,
+          marginTop: 28,
+        }}
+      >
+        {/* Revenue */}
+
+        <div
+          style={{
+            background: "#1e293b",
+            borderRadius: 18,
+            padding: 20,
+          }}
+        >
+          <h3>Revenue Trend</h3>
+
+          <p style={{ color: "#94a3b8", fontSize: 13 }}>
+            This graph shows daily restaurant revenue for the last seven days.
+            The X-axis represents days, while the Y-axis represents revenue in rupees.
+          </p>
+
+          <ResponsiveContainer width="100%" height={280}>
+            <LineChart data={revenueData}>
+              <CartesianGrid stroke="#334155" strokeDasharray="3 3" />
+              <XAxis dataKey="day" stroke="#cbd5e1" />
+              <YAxis stroke="#cbd5e1" />
+              <Tooltip />
+              <Legend />
+              <Line
+                dataKey="revenue"
+                stroke="#ff7a00"
+                strokeWidth={3}
+                name="Revenue (₹)"
+              />
+            </LineChart>
+          </ResponsiveContainer>
         </div>
 
-        <div style={{ background: "#111827", padding: "18px", borderRadius: "12px" }}>
-          <h3 style={{ marginBottom: "12px" }}>Sales Snapshot</h3>
-          <p>Today: ₹{report.todaySales?.toLocaleString("en-IN")}</p>
-          <p>This week: ₹{report.weeklySales?.toLocaleString("en-IN")}</p>
-          <p>Growth: {report.growth}%</p>
-          <p>Top category: {report.topCategory}</p>
-          <p>Trending: {summary.topSelling.join(", ") || "-"}</p>
+        {/* Pie */}
+
+        <div
+          style={{
+            background: "#1e293b",
+            borderRadius: 18,
+            padding: 20,
+          }}
+        >
+          <h3>Order Status</h3>
+
+          <p style={{ color: "#94a3b8", fontSize: 13 }}>
+            Displays the percentage of orders that are completed, preparing,
+            pending, or cancelled.
+          </p>
+
+          <ResponsiveContainer width="100%" height={260}>
+            <PieChart>
+              <Pie data={orderStatus} dataKey="value" outerRadius={85} label>
+                {orderStatus.map((entry, index) => (
+                  <Cell key={index} fill={COLORS[index]} />
+                ))}
+              </Pie>
+
+              <Tooltip />
+              <Legend />
+            </PieChart>
+          </ResponsiveContainer>
+        </div>
+      </div>
+
+      {/* Bar */}
+
+      <div
+        style={{
+          background: "#1e293b",
+          borderRadius: 18,
+          padding: 20,
+          marginTop: 24,
+        }}
+      >
+        <h3>Top Selling Menu Items</h3>
+
+        <p style={{ color: "#94a3b8", fontSize: 13 }}>
+          This chart compares the number of times each menu item was sold.
+          Higher bars indicate more customer demand.
+        </p>
+
+        <ResponsiveContainer width="100%" height={320}>
+          <BarChart data={topItems}>
+            <CartesianGrid stroke="#334155" strokeDasharray="3 3" />
+            <XAxis dataKey="item" stroke="#cbd5e1" />
+            <YAxis stroke="#cbd5e1" />
+            <Tooltip />
+            <Legend />
+            <Bar dataKey="qty" fill="#ff7a00" name="Items Sold" radius={[6,6,0,0]} />
+          </BarChart>
+        </ResponsiveContainer>
+      </div>
+
+      {/* Recent Orders */}
+
+      <div
+        style={{
+          background: "#1e293b",
+          borderRadius: 18,
+          padding: 20,
+          marginTop: 24,
+        }}
+      >
+        <h3>Recent Orders</h3>
+
+        <p style={{ color: "#94a3b8", fontSize: 13 }}>
+          Shows the latest customer orders with table number, status and bill amount.
+        </p>
+
+        <table style={{ width: "100%", borderCollapse: "collapse", marginTop: 12 }}>
+          <thead>
+            <tr style={{ color: "#94a3b8" }}>
+              <th align="left">Order ID</th>
+              <th align="left">Table</th>
+              <th align="left">Status</th>
+              <th align="right">Amount</th>
+            </tr>
+          </thead>
+
+          <tbody>
+            {orders.slice(0, 5).map((order) => (
+              <tr key={order.id} style={{ borderTop: "1px solid #334155" }}>
+                <td style={{ padding: "12px 0" }}>{order.id}</td>
+                <td>{order.table}</td>
+                <td>{order.status}</td>
+                <td align="right">₹{order.total}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+
+      {/* Bottom Summary */}
+
+      <div
+        style={{
+          display: "grid",
+          gridTemplateColumns: "repeat(auto-fit,minmax(220px,1fr))",
+          gap: 20,
+          marginTop: 24,
+        }}
+      >
+        <div style={{ background: "#1e293b", borderRadius: 18, padding: 18 }}>
+          <h4>Today's Sales</h4>
+          <h2>₹{report.todaySales?.toLocaleString("en-IN")}</h2>
+        </div>
+
+        <div style={{ background: "#1e293b", borderRadius: 18, padding: 18 }}>
+          <h4>Weekly Sales</h4>
+          <h2>₹{report.weeklySales?.toLocaleString("en-IN")}</h2>
+        </div>
+
+        <div style={{ background: "#1e293b", borderRadius: 18, padding: 18 }}>
+          <h4>Top Category</h4>
+          <h2>{report.topCategory}</h2>
+        </div>
+
+        <div style={{ background: "#1e293b", borderRadius: 18, padding: 18 }}>
+          <h4>Trending Items</h4>
+          <h2>{summary.topSelling?.join(", ") || "-"}</h2>
         </div>
       </div>
     </div>
