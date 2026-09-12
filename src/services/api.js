@@ -76,3 +76,9 @@ export const advanceKdsTicket = (ticketId) =>
   });
 
 export default apiRequest;
+
+export const updateSettings = (payload) =>
+  apiRequest('/settings', {
+    method: 'PUT',
+    body: JSON.stringify(payload),
+  });

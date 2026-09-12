@@ -26,7 +26,23 @@ function Customers() {
     const loadCustomers = async () => {
       try {
         const data = await getCustomers();
-        setCustomers(Array.isArray(data) ? data : []);
+
+        const updatedCustomers = Array.isArray(data)
+          ? data.map((customer, index) => {
+              const names = [
+                "Aarav Sharma",
+                "Rohan Verma",
+                "Ananya Patel",
+              ];
+
+              return {
+                ...customer,
+                name: names[index] || customer.name,
+              };
+            })
+          : [];
+
+        setCustomers(updatedCustomers);
       } catch (error) {
         console.error("Customers load failed:", error);
       } finally {
@@ -68,7 +84,10 @@ function Customers() {
     );
 
     const spendingData = [...customers]
-      .sort((a, b) => Number(b.totalSpent || 0) - Number(a.totalSpent || 0))
+      .sort(
+        (a, b) =>
+          Number(b.totalSpent || 0) - Number(a.totalSpent || 0)
+      )
       .map((customer) => ({
         name: customer.name?.split(" ")[0] || "Customer",
         spending: Number(customer.totalSpent || 0),
@@ -88,7 +107,9 @@ function Customers() {
   if (loading) {
     return (
       <div className="analytics-page">
-        <div className="analytics-loading">Loading customer analytics...</div>
+        <div className="analytics-loading">
+          Loading customer analytics...
+        </div>
       </div>
     );
   }
@@ -197,7 +218,9 @@ function Customers() {
                 </PieChart>
               </ResponsiveContainer>
             ) : (
-              <div className="empty-chart">No customer data available</div>
+              <div className="empty-chart">
+                No customer data available
+              </div>
             )}
           </div>
         </section>
@@ -225,9 +248,7 @@ function Customers() {
                     stroke="#94a3b8"
                   />
 
-                  <YAxis
-                    stroke="#94a3b8"
-                  />
+                  <YAxis stroke="#94a3b8" />
 
                   <Tooltip
                     formatter={(value) =>
@@ -249,7 +270,9 @@ function Customers() {
                 </BarChart>
               </ResponsiveContainer>
             ) : (
-              <div className="empty-chart">No spending data available</div>
+              <div className="empty-chart">
+                No spending data available
+              </div>
             )}
           </div>
         </section>
@@ -286,7 +309,10 @@ function Customers() {
                 <div className="customer-stat">
                   <span>Total Spent</span>
                   <strong>
-                    ₹{Number(customer.totalSpent || 0).toLocaleString("en-IN")}
+                    ₹
+                    {Number(customer.totalSpent || 0).toLocaleString(
+                      "en-IN"
+                    )}
                   </strong>
                 </div>
               </div>

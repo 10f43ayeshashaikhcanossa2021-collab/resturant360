@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
+import "../styles/analytics.css";
 import {
   PieChart,
   Pie,
