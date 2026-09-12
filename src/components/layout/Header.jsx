@@ -60,8 +60,8 @@ function Header({ isDarkMode, setIsDarkMode }) {
     <header className="header">
 
       <div className="header-left">
-        <h1>POS / Billing</h1>
-        <p>Process orders and manage billing.</p>
+        <h1>Resturant360</h1>
+        
       </div>
 
 
